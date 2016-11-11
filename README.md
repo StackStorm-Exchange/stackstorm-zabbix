@@ -10,6 +10,6 @@ Even if your pack is work-in-progress, you can still submit it to get advice and
 
 Before you submit a pack, make sure to read the [Create and Contribute a Pack](https://docs.stackstorm.com/reference/packs.html) section of our documentation.
 
-Here's N.E.P.T.R. the StackStorm Exchange Ruler, giving you a thumbs-up:
+Here's N.E.P.T.R. the StackStorm Exchange Governor, giving you a thumbs-up:
 
-![](http://imgur.com/a/KM0cw)
+![](http://i.imgur.com/3bqVAh0.gif)
