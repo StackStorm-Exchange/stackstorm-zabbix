@@ -1,0 +1,7 @@
+---
+
+url: https://example.com
+username: foo
+password: bar
+verify_ssl: False
+

@@ -1,0 +1,25 @@
+---
+
+name: create_host
+description: "Create new Host"
+
+runner_type: python-script
+entry_point: create_host.py
+
+parameters:
+  unattended:
+    type: boolean
+    default: False
+    description: "Unattended will use :name as prefix and create a single Instance."
+  provision_method:
+    type: string
+    enum:
+      - build
+      - image
+    default: image
+  name:
+    type: string
+    required: True
+  hostconfig:
+    type: object
+    description: "Foreman APIv2 /api/hosts Syntax"
