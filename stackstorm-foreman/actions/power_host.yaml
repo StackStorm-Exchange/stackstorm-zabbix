@@ -1,0 +1,21 @@
+---
+
+name: power_host
+description: "Run power operation on host"
+
+runner_type: python-script
+entry_point: power_host.py
+
+parameters:
+  host:
+    type: string
+    required: true
+  action:
+    type: string
+    enum:
+      - start
+      - stop
+      - reboot
+      - reset
+      - status
+    default: status
