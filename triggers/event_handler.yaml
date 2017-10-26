@@ -1,0 +1,16 @@
+---
+name: event_handler
+pack: zabbix
+description: 'Trigger type for zabbix event handler.'
+payload_schema:
+  type: object
+  properties:
+    alert_sendto:
+      type: string
+    alert_subject:
+      type: string
+    alert_message:
+      type: string
+    extra_args:
+      type: array
+      items: string

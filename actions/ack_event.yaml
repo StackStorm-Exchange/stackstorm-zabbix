@@ -1,0 +1,25 @@
+---
+name: ack_event
+pack: zabbix
+runner_type: python-script
+description: Send acknowledgement message for an event to Zabbix and may close it
+enabled: true
+entry_point: zabbix_action_runner.py
+parameters:
+    eventid:
+        type: string
+        required: True
+    message:
+        type: string
+        required: True
+    will_close:
+        type: boolean
+        required: False
+        enum:
+          - True
+          - False
+        default: True
+    action:
+        type: string
+        immutable: true
+        default: event.acknowledge
