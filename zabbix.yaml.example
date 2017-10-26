@@ -1,0 +1,5 @@
+---
+zabbix:
+  url: http://localhost/zabbix
+  username: Admin
+  password: zabbix

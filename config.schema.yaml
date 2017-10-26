@@ -1,0 +1,17 @@
+---
+zabbix:
+  description: Configuration to authenticate with Zabbix Server
+  type: object
+  required: true
+  additionalProperties: false
+  properties:
+    url:
+      type: string
+      description: The zabbix login URL
+      default: http://localhost/zabbix
+    username:
+      type: string
+      default: Admin
+    password:
+      type: string
+      default: zabbix
