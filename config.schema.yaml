@@ -15,3 +15,4 @@ zabbix:
     password:
       type: string
       default: zabbix
+      secret: true
