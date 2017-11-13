@@ -20,7 +20,8 @@ class EventActionTestCase(BaseActionTestCase):
     def test_run_action_without_configuration(self):
         action = self.get_action_instance({})
 
-        self.assertRaises(ValueError, action.run(action='something'))
+        with self.assertRaises(ValueError):
+            action.run(action='something')
 
     @mock.patch('lib.actions.ZabbixAPI')
     def test_run_action_with_invalid_config_of_endpoint(self, mock_client):
@@ -29,7 +30,8 @@ class EventActionTestCase(BaseActionTestCase):
 
         action = self.get_action_instance(self.full_config)
 
-        self.assertRaises(URLError, action.run(action='something'))
+        with self.assertRaises(URLError):
+            action.run(action='something')
 
     @mock.patch('lib.actions.ZabbixAPI')
     def test_run_action_with_invalid_config_of_account(self, mock_client):
@@ -38,7 +40,8 @@ class EventActionTestCase(BaseActionTestCase):
 
         action = self.get_action_instance(self.full_config)
 
-        self.assertRaises(ZabbixAPIException, action.run(action='something'))
+        with self.assertRaises(ZabbixAPIException):
+            action.run(action='something')
 
     @mock.patch('lib.actions.ZabbixAPI')
     def test_run_action_with_invalid_config_of_action(self, mock_client):
