@@ -18,6 +18,7 @@ from st2common.runners.base_action import Action
 from urllib2 import URLError
 from zabbix.api import ZabbixAPI
 
+
 class ZabbixBaseAction(Action):
     def __init__(self, config):
         super(ZabbixBaseAction, self).__init__(config)
@@ -53,4 +54,3 @@ class ZabbixBaseAction(Action):
             'message': message,
             'action': 1 if will_close else 0,
         }
-
