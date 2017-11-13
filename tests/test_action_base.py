@@ -20,8 +20,7 @@ class EventActionTestCase(BaseActionTestCase):
     def test_run_action_without_configuration(self):
         action = self.get_action_instance({})
 
-        with self.assertRaises(ValueError):
-            action.run(action='something')
+        self.assertRaises(ValueError, action.run)
 
     @mock.patch('lib.actions.ZabbixAPI')
     def test_run_action_with_invalid_config_of_endpoint(self, mock_client):
