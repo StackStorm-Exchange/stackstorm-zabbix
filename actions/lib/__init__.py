@@ -12,22 +12,3 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-from lib.actions import ZabbixBaseAction
-
-
-class ZabbixActionRunner(ZabbixBaseAction):
-    def run(self, action, *args, **kwargs):
-        self.connect()
-
-        if action == 'event.acknowledge':
-            kwargs = self.reconstruct_args_for_ack_event(*args, **kwargs)
-
-        try:
-            api_handler = self.client
-            for obj in action.split('.'):
-                api_handler = getattr(api_handler, obj)
-
-            return (True, api_handler(*args, **kwargs))
-        except AttributeError:
-            return (False, "Specified action(%s) is invalid" % action)

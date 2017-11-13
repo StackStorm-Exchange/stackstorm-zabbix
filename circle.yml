@@ -19,7 +19,10 @@ test:
 
 deployment:
   index:
-    branch: master
+    branches:
+      only:
+        - master
+        - /feature.*/
     owner: StackStorm-Exchange
     commands:
       - ~/ci/.circle/deployment
