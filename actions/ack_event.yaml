@@ -4,7 +4,7 @@ pack: zabbix
 runner_type: python-script
 description: Send acknowledgement message for an event to Zabbix and may close it
 enabled: true
-entry_point: zabbix_action_runner.py
+entry_point: event_action_runner.py
 parameters:
     eventid:
         type: string

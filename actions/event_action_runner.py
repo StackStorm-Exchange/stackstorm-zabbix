@@ -16,7 +16,7 @@
 from lib.actions import ZabbixBaseAction
 
 
-class ZabbixActionRunner(ZabbixBaseAction):
+class EventActionRunner(ZabbixBaseAction):
     def run(self, action, *args, **kwargs):
         self.connect()
 
