@@ -1,5 +1,4 @@
 import mock
-import re
 import yaml
 
 from st2tests.base import BaseActionTestCase
