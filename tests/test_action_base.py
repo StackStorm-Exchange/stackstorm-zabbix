@@ -9,21 +9,19 @@ from urllib2 import URLError
 from pyzabbix.api import ZabbixAPIException
 
 
-class ZabbixActionTestCase(BaseActionTestCase):
+class EventActionTestCase(BaseActionTestCase):
     __test__ = True
     action_cls = EventActionRunner
 
     def setUp(self):
-        super(ZabbixActionTestCase, self).setUp()
+        super(EventActionTestCase, self).setUp()
 
         self.full_config = yaml.safe_load(self.get_fixture_content('full.yaml'))
 
     def test_run_action_without_configuration(self):
         action = self.get_action_instance({})
-        result = action.run(action='something')
 
-        self.assertFalse(result[0])
-        self.assertTrue(re.match(r"Configuration for Zabbix pack is not set yet", result[1]))
+        self.assertRaises(ValueError, action.run(action='something'))
 
     @mock.patch('lib.actions.ZabbixAPI')
     def test_run_action_with_invalid_config_of_endpoint(self, mock_client):
@@ -31,10 +29,8 @@ class ZabbixActionTestCase(BaseActionTestCase):
         mock_client.side_effect = URLError('connection error')
 
         action = self.get_action_instance(self.full_config)
-        result = action.run(action='something')
 
-        self.assertFalse(result[0])
-        self.assertTrue(re.match(r"Failed to connect to Zabbix Server", result[1]))
+        self.assertRaises(URLError, action.run(action='something'))
 
     @mock.patch('lib.actions.ZabbixAPI')
     def test_run_action_with_invalid_config_of_account(self, mock_client):
@@ -42,10 +38,8 @@ class ZabbixActionTestCase(BaseActionTestCase):
         mock_client.side_effect = ZabbixAPIException('auth error')
 
         action = self.get_action_instance(self.full_config)
-        result = action.run(action='something')
 
-        self.assertFalse(result[0])
-        self.assertTrue(re.match(r"Failed to authenticate with Zabbix", result[1]))
+        self.assertRaises(ZabbixAPIException, action.run(action='something'))
 
     @mock.patch('lib.actions.ZabbixAPI')
     def test_run_action_with_invalid_config_of_action(self, mock_client):

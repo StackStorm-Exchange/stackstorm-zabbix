@@ -28,7 +28,7 @@ class ZabbixBaseAction(Action):
 
         if "zabbix" in self.config:
             if "url" not in self.config['zabbix']:
-                raise ValueError("Zabbix host details not in the config.yaml")
+                raise ValueError("Zabbix url details not in the config.yaml")
             elif "username" not in self.config['zabbix']:
                 raise ValueError("Zabbix user details not in the config.yaml")
             elif "password" not in self.config['zabbix']:
