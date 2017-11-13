@@ -16,11 +16,13 @@ class EventActionTestCase(BaseActionTestCase):
         super(EventActionTestCase, self).setUp()
 
         self.full_config = yaml.safe_load(self.get_fixture_content('full.yaml'))
+        self.blank_config = yaml.safe_load(self.get_fixture_content('blank.yaml'))
 
     def test_run_action_without_configuration(self):
-        action = self.get_action_instance({})
+        action = self.get_action_instance(self.blank_config)
 
-        self.assertRaises(ValueError, action.run)
+        with self.assertRaises(ValueError):
+            action.run(action='something')
 
     @mock.patch('lib.actions.ZabbixAPI')
     def test_run_action_with_invalid_config_of_endpoint(self, mock_client):
