@@ -82,3 +82,45 @@ class EventActionTestCase(BaseActionTestCase):
 
         result = action.find_host(test_dict['host_name'])
         self.assertEqual(result, test_dict)
+
+    @mock.patch('lib.actions.ZabbixAPI')
+    def test_find_host_no_host(self, mock_client):
+        action = self.get_action_instance(self.full_config)
+        test_dict = {'host_name': "test", 'host_id': "1"}
+        mock_client.host.get.return_value = []
+        action.client = mock_client
+
+        with self.assertRaises(ValueError):
+            aaction.find_host(test_dict['host_name'])
+
+    @mock.patch('lib.actions.ZabbixAPI')
+    def test_find_host_too_many_host(self, mock_client):
+        action = self.get_action_instance(self.full_config)
+        test_dict = [{'host_name': "test", 'host_id': "1"},
+                    {'host_name': "test", 'host_id': "2"}]
+        mock_client.host.get.return_value = test_dict
+        action.client = mock_client
+
+        with self.assertRaises(ValueError):
+            aaction.find_host(test_dict[0]['host_name'])
+
+    @mock.patch('lib.actions.ZabbixAPI')
+    def test_maintenance_get(self, mock_client):
+        action = self.get_action_instance(self.full_config)
+        test_dict = {'maintenance_name': "test", 'maintenance_id': "1"}
+        mock_client.maintenance.get.return_value = [test_dict]
+        action.client = mock_client
+
+        result = action.maintenance_get(test_dict['maintenance_name'])
+        self.assertEqual(result, test_dict)
+
+    @mock.patch('lib.actions.ZabbixAPI')
+    def test_maintenance_get(self, mock_client):
+        action = self.get_action_instance(self.full_config)
+        test_dict = {'maintenance_name': "test", 'maintenance_id': "1"}
+        mock_client.side_effect = ZabbixAPIException('auth error')
+        mock_client.maintenance.get.return_value = [test_dict]
+        action.client = mock_client
+
+        with self.assertRaises(ZabbixAPIException):
+            action.maintenance_get(test_dict['maintenance_name'])

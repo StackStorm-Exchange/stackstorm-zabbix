@@ -56,7 +56,11 @@ class ZabbixBaseAction(Action):
         }
 
     def find_host(self, host_name):
-        zabbix_host = self.client.host.get(filter={"host": host_name})
+        try:
+            zabbix_host = self.client.host.get(filter={"host": host_name})
+        except ZabbixAPIException as e:
+            raise ZabbixAPIException(("There was a problem searching for the host: "
+                                    "{0}".format(e)))
 
         if len(zabbix_host) == 0:
             raise ValueError("Could not find any hosts named {0}".format(host_name))
