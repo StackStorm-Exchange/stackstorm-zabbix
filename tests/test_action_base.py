@@ -78,6 +78,7 @@ class EventActionTestCase(BaseActionTestCase):
         action = self.get_action_instance(self.full_config)
         test_dict = {'host_name': "test", 'host_id': "1"}
         mock_client.host.get.return_value = [test_dict]
+        action.client = mock_client
 
         result = action.find_host(test_dict['host_name'])
         self.assertEqual(result, test_dict)
