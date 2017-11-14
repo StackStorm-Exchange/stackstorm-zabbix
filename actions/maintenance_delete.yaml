@@ -1,0 +1,12 @@
+---
+name: maintenance_delete
+pack: zabbix
+runner_type: python-script
+description: Create or update Zabbix Maintenance Window
+enabled: true
+entry_point: maintenance_delete.py
+parameters:
+    maintenance_window_name:
+        type: string
+        description: "Name that of the maintenance window"
+        required: True

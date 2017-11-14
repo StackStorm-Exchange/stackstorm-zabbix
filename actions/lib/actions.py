@@ -54,3 +54,43 @@ class ZabbixBaseAction(Action):
             'message': message,
             'action': 1 if will_close else 0,
         }
+
+    def find_host(self, host_name):
+        zabbix_host = self.client.host.get(filter={"host": host_name})
+
+        if len(zabbix_host) == 0:
+            raise ValueError("Could not find any hosts named {0}".format(host_name))
+        elif len(zabbix_host) >= 2:
+            raise ValueError("Multiple hosts found with the name: {0}".format(host_name))
+
+        return zabbix_host[0]
+
+    def maintenance_get(self, maintenance_name):
+        try:
+            result = self.client.maintenance.get(filter={"name": maintenance_name})
+            return result
+        except ZabbixAPIException as e:
+            raise ZabbixAPIException(("There was a problem searching for the maintenance window: "
+                                    "{0}".format(e)))
+
+    def maintenance_create_or_update(self, maintenance_params):
+        maintenance_result = self.maintenance_get(maintenance_params['name'])
+        if len(maintenance_result) == 0:
+            try:
+                create_result = self.client.maintenance.create(**maintenance_params)
+                return create_result
+            except ZabbixAPIException as e:
+                raise ZabbixAPIException(("There was a problem creating the "
+                                        "maintenance window: {0}".format(e)))
+        elif len(maintenance_result) == 1:
+            try:
+                maintenance_id = maintenance_result[0]['maintenanceid']
+                update_result = self.client.maintenance.update(maintenanceid=maintenance_id,
+                                                            **maintenance_params)
+                return update_result
+            except ZabbixAPIException as e:
+                raise ZabbixAPIException(("There was a problem updating the "
+                                        "maintenance window: {0}".format(e)))
+        elif len(maintenance_result) >= 2:
+            raise ValueError(("There are multiple maintenance windows with the "
+                            "name: {0}").format(maintenance_params['name']))
