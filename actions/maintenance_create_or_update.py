@@ -16,7 +16,6 @@
 from datetime import datetime
 from tzlocal import get_localzone
 from lib.actions import ZabbixBaseAction
-from pyzabbix.api import ZabbixAPIException
 
 
 class MaintenanceCreateOrUpdate(ZabbixBaseAction):
