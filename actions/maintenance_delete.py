@@ -18,23 +18,30 @@ from pyzabbix.api import ZabbixAPIException
 
 
 class MaintenanceDelete(ZabbixBaseAction):
-    def run(self, maintenance_window_name=None):
-        # Delete a maintenance window base on the given maintenance_window_name.
+    def run(self, maintenance_id=None, maintenance_window_name=None):
+        """ Delete a maintenance window base on the given maintenance_window_name
+        or a maintenance_id
+        """
         self.connect()
 
-        maintenance_result = self.maintenance_get(maintenance_window_name)
+        if maintenance_window_name is not None:
+            maintenance_result = self.maintenance_get(maintenance_window_name)
 
-        if len(maintenance_result) == 0:
-            raise ValueError(("Could not find maintenance windows with name: "
-                            "{0}").format(maintenance_window_name))
-        elif len(maintenance_result) == 1:
-            try:
+            if len(maintenance_result) == 0:
+                raise ValueError(("Could not find maintenance windows with name: "
+                                "{0}").format(maintenance_window_name))
+            elif len(maintenance_result) == 1:
                 maintenance_id = maintenance_result[0]['maintenanceid']
-                self.client.maintenance.delete(maintenance_id)
-                return True
-            except ZabbixAPIException as e:
-                raise ZabbixAPIException(("There was a problem deleting the "
-                    "maintenance window: {0}").format(e))
-        elif len(maintenance_result) >= 2:
-            raise ValueError(("There are multiple maintenance windows with the "
-                            "name: {0}").format(maintenance_window_name))
+            elif len(maintenance_result) >= 2:
+                raise ValueError(("There are multiple maintenance windows with the "
+                                "name: {0}").format(maintenance_window_name))
+        elif maintenance_window_name is None and maintenance_id is None:
+            raise ValueError("Must provide either a maintenance_window_name or a maintenance_id")
+
+        try:
+            self.client.maintenance.delete(maintenance_id)
+        except ZabbixAPIException as e:
+            raise ZabbixAPIException(("There was a problem deleting the "
+                "maintenance window: {0}").format(e))
+
+        return True
