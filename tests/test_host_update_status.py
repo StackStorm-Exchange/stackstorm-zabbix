@@ -51,7 +51,8 @@ class HostUpdateStatusTestCase(ZabbixBaseActionTestCase):
         action.client = mock_client
 
         result = action.run(**test_dict)
-        mock_client.host.update.assert_called_with(test_dict['status'], host_dict['hostid'])
+        mock_client.host.update.assert_called_with(hostid=host_dict['hostid'],
+                                                status=test_dict['status'])
         self.assertEqual(result, True)
 
     @mock.patch('lib.actions.ZabbixAPI')
