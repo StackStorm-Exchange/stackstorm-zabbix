@@ -152,7 +152,8 @@ class EventActionTestCase(BaseActionTestCase):
     @mock.patch('lib.actions.ZabbixBaseAction.maintenance_get')
     @mock.patch('lib.actions.ZabbixAPI')
     def test_maintenance_create_or_update_update_fail(self, mock_client, mock_maintenance_get):
-        est_dict = {'name': "test"}
+        action = self.get_action_instance(self.full_config)
+        test_dict = {'name': "test"}
         maintenance_dict = {'maintenance_name': "test", 'maintenance_id': "1"}
         mock_maintenance_get.return_value = [maintenance_dict]
         mock_client.maintenance.update.return_value = [maintenance_dict['maintenance_id']]
@@ -178,7 +179,8 @@ class EventActionTestCase(BaseActionTestCase):
     @mock.patch('lib.actions.ZabbixBaseAction.maintenance_get')
     @mock.patch('lib.actions.ZabbixAPI')
     def test_maintenance_create_or_update_create_fail(self, mock_client, mock_maintenance_get):
-        est_dict = {'name': "test"}
+        action = self.get_action_instance(self.full_config)
+        test_dict = {'name': "test"}
         maintenance_dict = {'maintenance_name': "test", 'maintenance_id': "1"}
         mock_maintenance_get.return_value = []
         mock_client.maintenance.create.return_value = [maintenance_dict['maintenance_id']]
