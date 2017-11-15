@@ -38,16 +38,14 @@ class HostGetIDTestCase(ZabbixBaseActionTestCase):
         with self.assertRaises(ZabbixAPIException):
             action.run(**test_dict)
 
-    @mock.patch('lib.actions.ZabbixBaseAction.find_host')
     @mock.patch('lib.actions.ZabbixBaseAction.connect')
-    def test_run(self, mock_connect, mock_find_host):
+    def test_run(self, mock_connect):
         action = self.get_action_instance(self.full_config)
         mock_connect.return_vaue = "connect return"
         test_dict = {'host': "test"}
         host_dict = {'name': "test", 'hostid': '1'}
-        mock_find_host.return_vaue = host_dict
         action.connect = mock_connect
-        action.find_host = mock_find_host
+        action.find_host = mock.MagicMock(return_value=host_dict)
 
         result = action.run(**test_dict)
         self.assertEqual(result, host_dict['hostid'])
