@@ -101,7 +101,7 @@ class EventActionTestCase(ZabbixBaseActionTestCase):
     def test_find_host_fail(self, mock_client):
         action = self.get_action_instance(self.full_config)
         test_dict = {'host_name': "test", 'host_id': "1"}
-        mock_client.host.get.side_effect = ZabbixAPIException('auth error')
+        mock_client.host.get.side_effect = ZabbixAPIException('host error')
         mock_client.host.get.return_value = [test_dict]
         action.client = mock_client
 
@@ -122,7 +122,7 @@ class EventActionTestCase(ZabbixBaseActionTestCase):
     def test_maintenance_get_fail(self, mock_client):
         action = self.get_action_instance(self.full_config)
         test_dict = {'maintenance_name': "test", 'maintenanceid': "1"}
-        mock_client.maintenance.get.side_effect = ZabbixAPIException('auth error')
+        mock_client.maintenance.get.side_effect = ZabbixAPIException('maintenance error')
         mock_client.maintenance.get.return_value = [test_dict]
         action.client = mock_client
 
@@ -150,7 +150,7 @@ class EventActionTestCase(ZabbixBaseActionTestCase):
         maintenance_dict = {'maintenance_name': "test", 'maintenanceid': "1"}
         mock_maintenance_get.return_value = [maintenance_dict]
         mock_client.maintenance.update.return_value = [maintenance_dict['maintenanceid']]
-        mock_client.maintenance.update.side_effect = ZabbixAPIException('auth error')
+        mock_client.maintenance.update.side_effect = ZabbixAPIException('maintenance error')
         action.client = mock_client
 
         with self.assertRaises(ZabbixAPIException):
@@ -177,7 +177,7 @@ class EventActionTestCase(ZabbixBaseActionTestCase):
         maintenance_dict = {'maintenance_name': "test", 'maintenanceid': "1"}
         mock_maintenance_get.return_value = []
         mock_client.maintenance.create.return_value = [maintenance_dict['maintenanceid']]
-        mock_client.maintenance.create.side_effect = ZabbixAPIException('auth error')
+        mock_client.maintenance.create.side_effect = ZabbixAPIException('maintenance error')
         action.client = mock_client
 
         with self.assertRaises(ZabbixAPIException):
