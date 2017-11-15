@@ -46,8 +46,8 @@ class HostGetIDTestCase(ZabbixBaseActionTestCase):
         test_dict = {'host': "test"}
         host_dict = {'name': "test", 'hostid': '1'}
         mock_find_host.return_vaue = host_dict
-        # action.connect = mock_connect
-        # action.find_host = mock_find_host
+        action.connect = mock_connect
+        action.find_host = mock_find_host
 
         result = action.run(**test_dict)
         self.assertEqual(result, host_dict['hostid'])
