@@ -8,7 +8,7 @@ class ZabbixBaseActionTestCase(BaseActionTestCase):
     __test__ = False
 
     def setUp(self):
-        super(EventActionTestCase, self).setUp()
+        super(ZabbixBaseActionTestCase, self).setUp()
 
         self._full_config = self.load_yaml('full.yaml')
         self._blank_config = self.load_yaml('blank.yaml')
