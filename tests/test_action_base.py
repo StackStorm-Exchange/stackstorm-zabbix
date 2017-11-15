@@ -1,5 +1,4 @@
 import mock
-import yaml
 
 from zabbix_base_action_test_case import ZabbixBaseActionTestCase
 from event_action_runner import EventActionRunner
