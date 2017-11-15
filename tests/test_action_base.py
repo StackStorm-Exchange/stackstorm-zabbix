@@ -91,7 +91,7 @@ class EventActionTestCase(BaseActionTestCase):
         action.client = mock_client
 
         with self.assertRaises(ValueError):
-            aaction.find_host(test_dict['host_name'])
+            action.find_host(test_dict['host_name'])
 
     @mock.patch('lib.actions.ZabbixAPI')
     def test_find_host_too_many_host(self, mock_client):
@@ -102,7 +102,7 @@ class EventActionTestCase(BaseActionTestCase):
         action.client = mock_client
 
         with self.assertRaises(ValueError):
-            aaction.find_host(test_dict[0]['host_name'])
+            action.find_host(test_dict[0]['host_name'])
 
     @mock.patch('lib.actions.ZabbixAPI')
     def test_maintenance_get(self, mock_client):
@@ -115,7 +115,7 @@ class EventActionTestCase(BaseActionTestCase):
         self.assertEqual(result, test_dict)
 
     @mock.patch('lib.actions.ZabbixAPI')
-    def test_maintenance_get(self, mock_client):
+    def test_maintenance_get_fail(self, mock_client):
         action = self.get_action_instance(self.full_config)
         test_dict = {'maintenance_name': "test", 'maintenance_id': "1"}
         mock_client.side_effect = ZabbixAPIException('auth error')
