@@ -118,7 +118,7 @@ class EventActionTestCase(BaseActionTestCase):
     @mock.patch('lib.actions.ZabbixAPI')
     def test_maintenance_get(self, mock_client):
         action = self.get_action_instance(self.full_config)
-        test_dict = {'maintenance_name': "test", 'maintenance_id': "1"}
+        test_dict = {'maintenance_name': "test", 'maintenanceid': "1"}
         mock_client.maintenance.get.return_value = [test_dict]
         action.client = mock_client
 
@@ -128,7 +128,7 @@ class EventActionTestCase(BaseActionTestCase):
     @mock.patch('lib.actions.ZabbixAPI')
     def test_maintenance_get_fail(self, mock_client):
         action = self.get_action_instance(self.full_config)
-        test_dict = {'maintenance_name': "test", 'maintenance_id': "1"}
+        test_dict = {'maintenance_name': "test", 'maintenanceid': "1"}
         mock_client.maintenance.get.side_effect = ZabbixAPIException('auth error')
         mock_client.maintenance.get.return_value = [test_dict]
         action.client = mock_client
@@ -141,22 +141,22 @@ class EventActionTestCase(BaseActionTestCase):
     def test_maintenance_create_or_update_update(self, mock_client, mock_maintenance_get):
         action = self.get_action_instance(self.full_config)
         test_dict = {'name': "test"}
-        maintenance_dict = {'maintenance_name': "test", 'maintenance_id': "1"}
+        maintenance_dict = {'maintenance_name': "test", 'maintenanceid': "1"}
         mock_maintenance_get.return_value = [maintenance_dict]
-        mock_client.maintenance.update.return_value = [maintenance_dict['maintenance_id']]
+        mock_client.maintenance.update.return_value = [maintenance_dict['maintenanceid']]
         action.client = mock_client
 
         result = action.maintenance_create_or_update(test_dict)
-        self.assertEqual(result, [maintenance_dict['maintenance_id']])
+        self.assertEqual(result, [maintenance_dict['maintenanceid']])
 
     @mock.patch('lib.actions.ZabbixBaseAction.maintenance_get')
     @mock.patch('lib.actions.ZabbixAPI')
     def test_maintenance_create_or_update_update_fail(self, mock_client, mock_maintenance_get):
         action = self.get_action_instance(self.full_config)
         test_dict = {'name': "test"}
-        maintenance_dict = {'maintenance_name': "test", 'maintenance_id': "1"}
+        maintenance_dict = {'maintenance_name': "test", 'maintenanceid': "1"}
         mock_maintenance_get.return_value = [maintenance_dict]
-        mock_client.maintenance.update.return_value = [maintenance_dict['maintenance_id']]
+        mock_client.maintenance.update.return_value = [maintenance_dict['maintenanceid']]
         mock_client.maintenance.update.side_effect = ZabbixAPIException('auth error')
         action.client = mock_client
 
@@ -168,22 +168,22 @@ class EventActionTestCase(BaseActionTestCase):
     def test_maintenance_create_or_update_create(self, mock_client, mock_maintenance_get):
         action = self.get_action_instance(self.full_config)
         test_dict = {'name': "test"}
-        maintenance_dict = {'maintenance_name': "test", 'maintenance_id': "1"}
+        maintenance_dict = {'maintenance_name': "test", 'maintenanceid': "1"}
         mock_maintenance_get.return_value = []
-        mock_client.maintenance.create.return_value = [maintenance_dict['maintenance_id']]
+        mock_client.maintenance.create.return_value = [maintenance_dict['maintenanceid']]
         action.client = mock_client
 
         result = action.maintenance_create_or_update(test_dict)
-        self.assertEqual(result, [maintenance_dict['maintenance_id']])
+        self.assertEqual(result, [maintenance_dict['maintenanceid']])
 
     @mock.patch('lib.actions.ZabbixBaseAction.maintenance_get')
     @mock.patch('lib.actions.ZabbixAPI')
     def test_maintenance_create_or_update_create_fail(self, mock_client, mock_maintenance_get):
         action = self.get_action_instance(self.full_config)
         test_dict = {'name': "test"}
-        maintenance_dict = {'maintenance_name': "test", 'maintenance_id': "1"}
+        maintenance_dict = {'maintenance_name': "test", 'maintenanceid': "1"}
         mock_maintenance_get.return_value = []
-        mock_client.maintenance.create.return_value = [maintenance_dict['maintenance_id']]
+        mock_client.maintenance.create.return_value = [maintenance_dict['maintenanceid']]
         mock_client.maintenance.create.side_effect = ZabbixAPIException('auth error')
         action.client = mock_client
 
@@ -197,10 +197,10 @@ class EventActionTestCase(BaseActionTestCase):
                                                                     mock_maintenance_get):
         action = self.get_action_instance(self.full_config)
         test_dict = {'name': "test"}
-        maintenance_dict = [{'maintenance_name': "test", 'maintenance_id': "1"},
-                            {'maintenance_name': "test", 'maintenance_id': "2"}]
+        maintenance_dict = [{'maintenance_name': "test", 'maintenanceid': "1"},
+                            {'maintenance_name': "test", 'maintenanceid': "2"}]
         mock_maintenance_get.return_value = maintenance_dict
-        mock_client.maintenance.create.return_value = [maintenance_dict['maintenance_id']]
+        mock_client.maintenance.create.return_value = maintenance_dict[0]['maintenanceid']
         action.client = mock_client
 
         with self.assertRaises(ValueError):
