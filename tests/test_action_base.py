@@ -1,22 +1,16 @@
 import mock
 import yaml
 
-from st2tests.base import BaseActionTestCase
+from zabbix_base_action_test_case import ZabbixBaseActionTestCase
 from event_action_runner import EventActionRunner
 
 from urllib2 import URLError
 from pyzabbix.api import ZabbixAPIException
 
 
-class EventActionTestCase(BaseActionTestCase):
+class EventActionTestCase(ZabbixBaseActionTestCase):
     __test__ = True
     action_cls = EventActionRunner
-
-    def setUp(self):
-        super(EventActionTestCase, self).setUp()
-
-        self.full_config = yaml.safe_load(self.get_fixture_content('full.yaml'))
-        self.blank_config = yaml.safe_load(self.get_fixture_content('blank.yaml'))
 
     def test_run_action_without_configuration(self):
         self.assertRaises(ValueError, self.action_cls, self.blank_config)
