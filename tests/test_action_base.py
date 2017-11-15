@@ -112,13 +112,13 @@ class EventActionTestCase(BaseActionTestCase):
         action.client = mock_client
 
         result = action.maintenance_get(test_dict['maintenance_name'])
-        self.assertEqual(result, test_dict)
+        self.assertEqual(result, [test_dict])
 
     @mock.patch('lib.actions.ZabbixAPI')
     def test_maintenance_get_fail(self, mock_client):
         action = self.get_action_instance(self.full_config)
         test_dict = {'maintenance_name': "test", 'maintenance_id': "1"}
-        mock_client.side_effect = ZabbixAPIException('auth error')
+        mock_client.maintenance.get.side_effect = ZabbixAPIException('auth error')
         mock_client.maintenance.get.return_value = [test_dict]
         action.client = mock_client
 
