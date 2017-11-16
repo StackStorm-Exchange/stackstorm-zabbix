@@ -69,12 +69,12 @@ class EventActionTestCase(ZabbixBaseActionTestCase):
     @mock.patch('lib.actions.ZabbixAPI')
     def test_find_host(self, mock_client):
         action = self.get_action_instance(self.full_config)
-        test_dict = {'host_name': "test", 'host_id': "1"}
+        test_dict = {'host_name': "test", 'hostid': "1"}
         mock_client.host.get.return_value = [test_dict]
         action.client = mock_client
 
         result = action.find_host(test_dict['host_name'])
-        self.assertEqual(result, test_dict['host_id'])
+        self.assertEqual(result, test_dict['hostid'])
 
     @mock.patch('lib.actions.ZabbixAPI')
     def test_find_host_no_host(self, mock_client):
@@ -89,8 +89,8 @@ class EventActionTestCase(ZabbixBaseActionTestCase):
     @mock.patch('lib.actions.ZabbixAPI')
     def test_find_host_too_many_host(self, mock_client):
         action = self.get_action_instance(self.full_config)
-        test_dict = [{'host_name': "test", 'host_id': "1"},
-                    {'host_name': "test", 'host_id': "2"}]
+        test_dict = [{'host_name': "test", 'hostid': "1"},
+                    {'host_name': "test", 'hostid': "2"}]
         mock_client.host.get.return_value = test_dict
         action.client = mock_client
 
@@ -100,7 +100,7 @@ class EventActionTestCase(ZabbixBaseActionTestCase):
     @mock.patch('lib.actions.ZabbixAPI')
     def test_find_host_fail(self, mock_client):
         action = self.get_action_instance(self.full_config)
-        test_dict = {'host_name': "test", 'host_id': "1"}
+        test_dict = {'host_name': "test", 'hostid': "1"}
         mock_client.host.get.side_effect = ZabbixAPIException('host error')
         mock_client.host.get.return_value = [test_dict]
         action.client = mock_client
