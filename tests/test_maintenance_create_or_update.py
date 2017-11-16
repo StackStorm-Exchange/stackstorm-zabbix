@@ -60,11 +60,10 @@ class MaintenanceCreateOrUpdateTestCase(ZabbixBaseActionTestCase):
                     'end_date': "2017-11-14 10:45"}
         host_dict = {'name': "test", 'hostid': '1'}
         maintenance_dict = {'maintenanceids': ['1']}
-        expected_return = {'maintenance_id': maintenance_dict['maintenanceids'][0]}
         action.connect = mock_connect
         action.find_host = mock.MagicMock(return_value=host_dict)
-        action.maintenance_create_or_update = mock.MagicMock(side_effect=ZabbixAPIException('maintenance error'),
-                                                            return_value=maintenance_dict)
+        action.maintenance_create_or_update = mock.MagicMock(return_value=maintenance_dict,
+            side_effect=ZabbixAPIException('maintenance error'))
 
         with self.assertRaises(ZabbixAPIException):
             action.run(**test_dict)
