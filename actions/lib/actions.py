@@ -67,7 +67,9 @@ class ZabbixBaseAction(Action):
         elif len(zabbix_host) >= 2:
             raise ValueError("Multiple hosts found with the name: {0}".format(host_name))
 
-        return zabbix_host[0]
+        self.zabbix_host = zabbix_host[0]
+
+        return self.zabbix_host['hostid']
 
     def maintenance_get(self, maintenance_name):
         try:

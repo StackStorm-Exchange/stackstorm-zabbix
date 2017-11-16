@@ -32,9 +32,7 @@ class MaintenanceCreateOrUpdate(ZabbixBaseAction):
         """
         self.connect()
 
-        zabbix_host = self.find_host(host)
-
-        host_id = zabbix_host['hostid']
+        host_id = self.find_host(host)
 
         start_time = None
         end_time = None

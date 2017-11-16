@@ -74,7 +74,7 @@ class EventActionTestCase(ZabbixBaseActionTestCase):
         action.client = mock_client
 
         result = action.find_host(test_dict['host_name'])
-        self.assertEqual(result, test_dict)
+        self.assertEqual(result, test_dict['host_id'])
 
     @mock.patch('lib.actions.ZabbixAPI')
     def test_find_host_no_host(self, mock_client):

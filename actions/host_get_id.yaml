@@ -8,5 +8,5 @@ entry_point: host_get_id.py
 parameters:
     host:
         type: string
-        description: "Hostname of FQDN of the Zabbix Host"
+        description: "Name of the Zabbix Host"
         required: True

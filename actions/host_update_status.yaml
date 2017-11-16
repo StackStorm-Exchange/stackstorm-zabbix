@@ -8,9 +8,9 @@ entry_point: host_update_status.py
 parameters:
     host:
         type: string
-        description: "Hostname of FQDN of the Zabbix Host"
+        description: "Name of the Zabbix Host"
         required: True
     status:
         type: integer
-        description: "Status to set the Zabbix Host to ex. 0 - monitored host 1 - unmonitored host"
+        description: "Status to set the Zabbix Host to valid values: 0 - monitored host 1 - unmonitored host"
         required: True

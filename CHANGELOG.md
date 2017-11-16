@@ -9,6 +9,8 @@
 - Added maintenance_create_or_update action to create a maintenance window or update one if it already exists
 - Added maintenance_delete action to delete a maintenance window
 
+Contributed by Brad Bishop (Encore Technologies)
+
 ## 0.1.1
 
 - Set a secret option to the password property in the config.schema.yaml

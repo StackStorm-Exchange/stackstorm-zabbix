@@ -23,6 +23,6 @@ class HostGetID(ZabbixBaseAction):
         """
         self.connect()
 
-        zabbix_host = self.find_host(host)
+        host_id = self.find_host(host)
 
-        return zabbix_host['hostid']
+        return host_id

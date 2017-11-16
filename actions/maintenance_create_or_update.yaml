@@ -12,7 +12,7 @@ parameters:
         required: True
     host:
         type: string
-        description: "Hostname of FQDN of the Zabbix Host"
+        description: "Name of the Zabbix Host"
         required: True
     maintenance_window_name:
         type: string
@@ -20,7 +20,7 @@ parameters:
         required: True
     maintenance_type:
         type: integer
-        description: "Type of maintenance. 0 - with data collection 1 - without data collection"
+        description: "Type of maintenance valid values: 0 - with data collection 1 - without data collection"
         default: 0
     start_date:
         type: string
@@ -28,5 +28,5 @@ parameters:
         required: True
     time_type:
         type: integer
-        description: "Type of time period. ex 0 - one time only; 2 - daily; 3 - weekly; 4 - monthly"
+        description: "Type of time period valid values: 0 - one time only; 2 - daily; 3 - weekly; 4 - monthly"
         default: 0
