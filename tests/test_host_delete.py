@@ -1,22 +1,22 @@
 import mock
 
 from zabbix_base_action_test_case import ZabbixBaseActionTestCase
-from host_update_status import HostUpdateStatus
+from host_delete import HostDelete
 
 from urllib2 import URLError
 from pyzabbix.api import ZabbixAPIException
 
 
-class HostUpdateStatusTestCase(ZabbixBaseActionTestCase):
+class HostDeleteTestCase(ZabbixBaseActionTestCase):
     __test__ = True
-    action_cls = HostUpdateStatus
+    action_cls = HostDelete
 
     @mock.patch('lib.actions.ZabbixBaseAction.find_host')
     @mock.patch('lib.actions.ZabbixBaseAction.connect')
     def test_run_connection_error(self, mock_connect, mock_find_host):
         action = self.get_action_instance(self.full_config)
         mock_connect.side_effect = URLError('connection error')
-        test_dict = {'host': "test", 'status': 1}
+        test_dict = {'host': "test"}
         host_dict = {'name': "test", 'hostid': '1'}
         mock_find_host.return_vaue = host_dict
 
@@ -28,7 +28,7 @@ class HostUpdateStatusTestCase(ZabbixBaseActionTestCase):
     def test_run_host_error(self, mock_connect, mock_find_host):
         action = self.get_action_instance(self.full_config)
         mock_connect.return_vaue = "connect return"
-        test_dict = {'host': "test", 'status': 1}
+        test_dict = {'host': "test"}
         host_dict = {'name': "test", 'hostid': '1'}
         mock_find_host.side_effect = ZabbixAPIException('host error')
         mock_find_host.return_vaue = host_dict
@@ -43,29 +43,28 @@ class HostUpdateStatusTestCase(ZabbixBaseActionTestCase):
     def test_run(self, mock_connect, mock_client):
         action = self.get_action_instance(self.full_config)
         mock_connect.return_vaue = "connect return"
-        test_dict = {'host': "test", 'status': 1}
+        test_dict = {'host': "test"}
         host_dict = {'name': "test", 'hostid': '1'}
         action.connect = mock_connect
         action.find_host = mock.MagicMock(return_value=host_dict)
-        mock_client.host.update.return_value = "update return"
+        mock_client.host.delete.return_value = "delete return"
         action.client = mock_client
 
         result = action.run(**test_dict)
-        mock_client.host.update.assert_called_with(hostid=host_dict['hostid'],
-                                                status=test_dict['status'])
+        mock_client.host.delete.assert_called_with(host_dict['hostid'])
         self.assertEqual(result, True)
 
     @mock.patch('lib.actions.ZabbixAPI')
     @mock.patch('lib.actions.ZabbixBaseAction.connect')
-    def test_run_update_error(self, mock_connect, mock_client):
+    def test_run_delete_error(self, mock_connect, mock_client):
         action = self.get_action_instance(self.full_config)
         mock_connect.return_vaue = "connect return"
-        test_dict = {'host': "test", 'status': 1}
+        test_dict = {'host': "test"}
         host_dict = {'name': "test", 'hostid': '1'}
         action.connect = mock_connect
         action.find_host = mock.MagicMock(return_value=host_dict)
-        mock_client.host.update.side_effect = ZabbixAPIException('host error')
-        mock_client.host.update.return_value = "update return"
+        mock_client.host.delete.side_effect = ZabbixAPIException('host error')
+        mock_client.host.delete.return_value = "delete return"
         action.client = mock_client
 
         with self.assertRaises(ZabbixAPIException):

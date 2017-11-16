@@ -112,5 +112,6 @@ You need to set configuration when you run following Action. These are the confi
 | zabbix.ack_event                      | Send acknowledgement message for an event to Zabbix and may close it |
 | zabbix.host_get_id                    | Get the ID of a Zabbix Host |
 | zabbix.host_update_status             | Update the status of a Zabbix Host |
+| zabbix.host_delete                    | Delete a Zabbix Host |
 | zabbix.maintenance_create_or_update   | Create or update Zabbix Maintenance Window |
 | zabbix.maintenance_delete             | Delete Zabbix Maintenance Window |
