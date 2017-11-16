@@ -2,7 +2,7 @@
 name: host_update_status
 pack: zabbix
 runner_type: python-script
-description: Updates the status of a zabbix host
+description: Update the status of a Zabbix Host
 enabled: true
 entry_point: host_update_status.py
 parameters:
