@@ -115,3 +115,4 @@ You need to set configuration when you run following Action. These are the confi
 | zabbix.host_delete                    | Delete a Zabbix Host |
 | zabbix.maintenance_create_or_update   | Create or update Zabbix Maintenance Window |
 | zabbix.maintenance_delete             | Delete Zabbix Maintenance Window |
+| zabbix.test_credentials               | Tests if it credentials in the config are valid |
