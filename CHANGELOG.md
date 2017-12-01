@@ -1,5 +1,10 @@
 # Change Log
 
+## 0.1.3
+
+- Added a new action `test_credentials` that tests if the credentials in the config are valid.
+  Contributed by Nick Maludy (Encore Technologies)
+
 ## 0.1.2
 
 - Added base action class with common code. Removed duplicate code from other actions
