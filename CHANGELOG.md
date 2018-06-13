@@ -1,5 +1,10 @@
 # Change Log
 
+## 0.1.4
+
+- Added a new action `host_get_status` that retrieves the status of a host in Zabbix.
+  Contributed by Brad Bishop (Encore Technologies)
+
 ## 0.1.3
 
 - Added a new action `test_credentials` that tests if the credentials in the config are valid.
