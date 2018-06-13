@@ -1,0 +1,12 @@
+---
+name: host_get_status
+pack: zabbix
+runner_type: python-script
+description: Get the status of a Zabbix Host
+enabled: true
+entry_point: host_get_status.py
+parameters:
+    host:
+        type: string
+        description: "Name of the Zabbix Host"
+        required: True
