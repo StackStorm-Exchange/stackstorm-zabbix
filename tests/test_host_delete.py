@@ -53,6 +53,20 @@ class HostDeleteTestCase(ZabbixBaseActionTestCase):
 
     @mock.patch('lib.actions.ZabbixAPI')
     @mock.patch('lib.actions.ZabbixBaseAction.connect')
+    def test_run_id(self, mock_connect, mock_client):
+        action = self.get_action_instance(self.full_config)
+        mock_connect.return_vaue = "connect return"
+        test_dict = {'host_id': "1"}
+        action.connect = mock_connect
+        mock_client.host.delete.return_value = "delete return"
+        action.client = mock_client
+
+        result = action.run(**test_dict)
+        mock_client.host.delete.assert_called_with(test_dict['host_id'])
+        self.assertEqual(result, True)
+
+    @mock.patch('lib.actions.ZabbixAPI')
+    @mock.patch('lib.actions.ZabbixBaseAction.connect')
     def test_run_delete_error(self, mock_connect, mock_client):
         action = self.get_action_instance(self.full_config)
         mock_connect.return_vaue = "connect return"
