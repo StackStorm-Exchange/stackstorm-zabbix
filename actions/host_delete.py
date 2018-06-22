@@ -19,8 +19,7 @@ from pyzabbix.api import ZabbixAPIException
 
 class HostDelete(ZabbixBaseAction):
     def run(self, host=None, host_id=None):
-        """ Updates the status of a Zabbix Host. Status needs to be
-        1 or 0 for the call to succeed.
+        """ Deletes a Zabbix Host.
         """
         self.connect()
 
