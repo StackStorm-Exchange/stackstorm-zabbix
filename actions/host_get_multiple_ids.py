@@ -29,12 +29,12 @@ class ZabbixGetMultipleHostID(ZabbixBaseAction):
             raise ZabbixAPIException(("There was a problem searching for the host: "
                                     "{0}".format(e)))
 
-        zabbit_hosts_return = []
+        zabbix_hosts_return = []
         if len(zabbix_hosts) > 0:
             for host in zabbix_hosts:
-                zabbit_hosts_return.append(host['hostid'])
+                zabbix_hosts_return.append(host['hostid'])
 
-        return zabbit_hosts_return
+        return zabbix_hosts_return
 
     def run(self, host=None):
         """ Gets the IDs of the Zabbix host given the Hostname or FQDN
