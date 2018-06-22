@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.1.5
+
+- Added a new action `host_get_multiple_ids` that can retrieve 0, a single, or multiple zabbix hosts and
+  return those as an array. This is for a race condition that exists when using several zabbix proxies.
+  Contributed by Brad Bishop (Encore Technologies)
+
 ## 0.1.4
 
 - Added a new action `host_get_status` that retrieves the status of a host in Zabbix.
