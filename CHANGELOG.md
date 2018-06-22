@@ -4,6 +4,8 @@
 
 - Added a new action `host_get_multiple_ids` that can retrieve 0, a single, or multiple zabbix hosts and
   return those as an array. This is for a race condition that exists when using several zabbix proxies.
+- Added a new action `host_delete_by_id` that allows a host to be deleted given the Host's ID instead of 
+  the Host's Name
   Contributed by Brad Bishop (Encore Technologies)
 
 ## 0.1.4
