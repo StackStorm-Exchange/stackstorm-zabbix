@@ -1,5 +1,10 @@
 # Change Log
 
+## 0.1.6
+
+- Fixed typo in `tools/scripts/st2_dispatch.py`.
+  Contributed by Nick Maludy (Encore Technologies)
+
 ## 0.1.5
 
 - Added a new action `host_get_multiple_ids` that can retrieve 0, a single, or multiple zabbix hosts and

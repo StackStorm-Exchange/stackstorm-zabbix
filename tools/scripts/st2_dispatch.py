@@ -42,7 +42,7 @@ def get_options():
                       help="Hostname or IP address which is run StackStorm")
     parser.add_option('--alert-sendto', dest="alert_sendto", default="",
                       help="'Send to' value from user media configuration of Zabbix")
-    parser.add_option('--alert-subject', dest="alaert_subject", default="",
+    parser.add_option('--alert-subject', dest="alert_subject", default="",
                       help="'Default subject' value from action configuration of Zabbix")
     parser.add_option('--alert-message', dest="alert_message", default="",
                       help="'Default message' value from action configuration of Zabbix")
