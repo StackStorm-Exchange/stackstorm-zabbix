@@ -10,7 +10,7 @@ class ZabbixDispatcher(BaseCLIApp):
         self.options = options
 
         # make a client object to connect st2api
-        self.client = self.get_client(args=options, debug=True)
+        self.client = self.get_client(args=options)
         self.client.token = self._get_auth_token(client=self.client,
                                                  username=options.st2_userid,
                                                  password=options.st2_passwd,
@@ -77,7 +77,7 @@ def main():
     dispatcher = ZabbixDispatcher(options)
 
     # dispatch trigger of zabbix.event_handler
-    #dispatcher.dispatch_trigger(args)
+    dispatcher.dispatch_trigger(args)
 
 
 if __name__ == '__main__':
