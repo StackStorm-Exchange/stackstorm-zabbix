@@ -10,7 +10,7 @@ class ZabbixDispatcher(BaseCLIApp):
         self.options = options
 
         # make a client object to connect st2api
-        self.client = self.get_client(args=options)
+        self.client = self.get_client(args=options, debug=True)
         self.client.token = self._get_auth_token(client=self.client,
                                                  username=options.st2_userid,
                                                  password=options.st2_passwd,
@@ -42,7 +42,7 @@ def get_options():
                       help="Hostname or IP address which is run StackStorm")
     parser.add_option('--alert-sendto', dest="alert_sendto", default="",
                       help="'Send to' value from user media configuration of Zabbix")
-    parser.add_option('--alert-subject', dest="alaert_subject", default="",
+    parser.add_option('--alert-subject', dest="alert_subject", default="",
                       help="'Default subject' value from action configuration of Zabbix")
     parser.add_option('--alert-message', dest="alert_message", default="",
                       help="'Default message' value from action configuration of Zabbix")
@@ -77,7 +77,7 @@ def main():
     dispatcher = ZabbixDispatcher(options)
 
     # dispatch trigger of zabbix.event_handler
-    dispatcher.dispatch_trigger(args)
+    #dispatcher.dispatch_trigger(args)
 
 
 if __name__ == '__main__':
