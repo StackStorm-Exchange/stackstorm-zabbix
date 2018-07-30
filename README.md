@@ -13,7 +13,7 @@ First of all, you can install this pack as below
 $ st2 pack install zabbix
 ```
 
-After that you can set configurations for dispatching StackStorm's Trigger "zabbix.event_handler" to Zabbix by `/opt/stackstorm/pack/zabbix/tools/register_st2_config_to_zabbix.py` command. This is the usage of it.
+After that you can set configurations for dispatching StackStorm's Trigger "zabbix.event_handler" to Zabbix by `/opt/stackstorm/packs/zabbix/tools/register_st2_config_to_zabbix.py` command. This is the usage of it.
 ```
 Usage: register_st2_config_to_zabbix.py [options]
 
@@ -33,7 +33,7 @@ Options:
 And here is an example to execute it.
 ```
 $ source /opt/stackstorm/virtualenvs/zabbix/bin/activate
-$ /opt/stackstorm/pack/zabbix/tools/register_st2_config_to_zabbix.py -z http://zabbix-host/zabbix -u Admin -p zabbix
+$ /opt/stackstorm/packs/zabbix/tools/register_st2_config_to_zabbix.py -z http://zabbix-host/zabbix -u Admin -p zabbix
 ```
 
 This will register a new MediaType (`StackStorm`) to dispatch events and add an action (`Dispatching to StackStorm`) which is associated with it.

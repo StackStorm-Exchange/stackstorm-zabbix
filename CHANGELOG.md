@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.1.7
+
+- Changed MediaType parameter of StackStorm to access through the API endpoints instead of accessing directly to each service processes.
+- Corrected "st2_dispatcy.py" to conform to be able to communicate with up to date st2api (v2.8).
+- Changed to be able to overwrite Zabbix configuration for StackStorm by 'register_st2_config_to_zabbix.py'
+- Fixed typos in README
+
+
 ## 0.1.6
 
 - Fixed typo in `tools/scripts/st2_dispatch.py`.

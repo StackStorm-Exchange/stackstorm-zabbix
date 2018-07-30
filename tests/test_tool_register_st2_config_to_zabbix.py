@@ -58,19 +58,55 @@ class TestRegisterMediaType(TestCase):
     @mock.patch('register_st2_config_to_zabbix.ZabbixAPI')
     def test_register_duplicate_mediatype(self, mock_client):
         sys.argv += ['-z', 'http://zabbix-host']
+        self.is_registered_media = False
+        self.is_registered_action = False
+        self.is_called_delete = False
+
+        def side_effect_media(*args, **kwargs):
+            self.is_registered_media = True
+
+        def side_effect_action(*args, **kwargs):
+            self.is_registered_action = True
+
+        def side_effect_delete(*args, **kwargs):
+            self.is_called_delete = True
 
         # make mock to get target mediatype
         mock_obj = mock.Mock()
-        mock_obj.mediatype.get.return_value = [
-            {'type': register_st2_config_to_zabbix.SCRIPT_MEDIA_TYPE,
-             'exec_path': register_st2_config_to_zabbix.ST2_DISPATCHER_SCRIPT}
-        ]
+        mock_obj.mediatype.get.return_value = [{
+            'type': register_st2_config_to_zabbix.SCRIPT_MEDIA_TYPE,
+            'exec_path': register_st2_config_to_zabbix.ST2_DISPATCHER_SCRIPT,
+            'mediatypeid': '1',
+        }]
+
+        # make mock to return no action
+        mock_obj.action.get.return_value = []
+        mock_obj.mediatype.update.return_value = {'mediatypeids': ['1']}
         mock_client.return_value = mock_obj
 
-        with self.assertRaises(SystemExit):
-            register_st2_config_to_zabbix.main()
-            self.assertTrue(re.match(r"A MediaType for StackStorm has been already registered.",
-                                     self.io_stderr.getvalue()))
+        mock_obj.user.addmedia.side_effect = side_effect_media
+        mock_obj.action.create.side_effect = side_effect_action
+        mock_obj.action.delete.side_effect = side_effect_delete
+
+        register_st2_config_to_zabbix.main()
+        self.assertTrue(re.match(r"Success to register the configurations",
+                                 self.io_stdout.getvalue()))
+        self.assertTrue(self.is_registered_media)
+        self.assertTrue(self.is_registered_action)
+        self.assertFalse(self.is_called_delete)
+
+        # make mock to return action which is alredy registered
+        mock_obj.action.get.return_value = [{
+            'name': register_st2_config_to_zabbix.ST2_ACTION_NAME,
+            'actionid': 1,
+        }]
+
+        register_st2_config_to_zabbix.main()
+        self.assertTrue(re.match(r"Success to register the configurations",
+                                 self.io_stdout.getvalue()))
+        self.assertTrue(self.is_registered_media)
+        self.assertTrue(self.is_registered_action)
+        self.assertTrue(self.is_called_delete)
 
     @mock.patch('register_st2_config_to_zabbix.ZabbixAPI')
     def test_register_mediatype_successfully(self, mock_client):
@@ -91,6 +127,7 @@ class TestRegisterMediaType(TestCase):
             {'type': 0}
         ]
         mock_obj.mediatype.create.return_value = {'mediatypeids': ['1']}
+        mock_obj.action.get.return_value = []
         mock_obj.user.addmedia.side_effect = side_effect_media
         mock_obj.action.create.side_effect = side_effect_action
         mock_client.return_value = mock_obj
