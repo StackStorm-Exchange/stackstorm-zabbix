@@ -42,8 +42,10 @@ When you created a new Zabbix-Trigger and link it to the Action, StackStorm woul
 ## Zabbix configuration
 
 ### MediaType for the StackStorm
-After adding the configurations to the Zabbix, you need to modify the parameters that specify the Hostname (or IP address) of StackStorm node and username and password to auehtnticate with StackStorm from the Zabbix-portal. You can do it by accessing the page of `Administration` > `MediaType`.
+After executing the `register_st2_config_to_zabbix.py` command, you can notice that new MediaType `StackStorm` is added on `Media types` page (you can move on by `Administration` > `MediaType`). And you also have to this configuration to send a request for dispatching trigger of StackStorm when Zabbix server detect an alert. Please click the `StackStorm` mediatype.
 ![](./images/configuration_for_mediatype1.png)
+
+You see following page, and you have to fill out with parameters for your st2 environment (the endpoint URLs of st2-api and st2-auth, and authentication informations).
 ![](./images/configuration_for_mediatype2.png)
 
 You can specify the additional parameters and you can handle them from the payload of the StackStorm's Trigger(`zabbix.event_handler`).
