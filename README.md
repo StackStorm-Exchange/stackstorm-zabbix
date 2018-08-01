@@ -1,7 +1,7 @@
 # Zabbix Integration Pack
 This pack provides the capability to handle alerts from Zabbix and actions to it. This pack set configurations of Zabbix to dispatch event to the Trigger `zabbix.event_handler` along with the raises of Zabbix Alert. This describes the internal construction of this pack.
 
-![Internal construction of this pack](https://raw.githubusercontent.com/userlocalhost/st2-zabbix/images_for_README/images/internal_construction.png)
+![Internal construction of this pack](./images/internal_construction.png)
 
 # Requirements
 The system requirement of this pack is
@@ -43,8 +43,8 @@ When you created a new Zabbix-Trigger and link it to the Action, StackStorm woul
 
 ### MediaType for the StackStorm
 After adding the configurations to the Zabbix, you need to modify the parameters that specify the Hostname (or IP address) of StackStorm node and username and password to auehtnticate with StackStorm from the Zabbix-portal. You can do it by accessing the page of `Administration` > `MediaType`.
-![](https://raw.githubusercontent.com/userlocalhost/st2-zabbix/images_for_README/images/configuration_for_mediatype1.png)
-![](https://raw.githubusercontent.com/userlocalhost/st2-zabbix/images_for_README/images/configuration_for_mediatype2.png)
+![](./images/configuration_for_mediatype1.png)
+![](./images/configuration_for_mediatype2.png)
 
 You can specify the additional parameters and you can handle them from the payload of the StackStorm's Trigger(`zabbix.event_handler`).
 
@@ -63,8 +63,8 @@ $ sudo cp /opt/stackstorm/pack/zabbix/tools/scripts/st2_dispatch.py /usr/lib/zab
 
 ### Action
 You can link arbitrary Trigger (of Zabbix) to the action (`Dispatching to StackStorm`) which is registered by the setup command like this.
-![](https://raw.githubusercontent.com/userlocalhost/st2-zabbix/images_for_README/images/configuration_for_action1.png)
-![](https://raw.githubusercontent.com/userlocalhost/st2-zabbix/images_for_README/images/configuration_for_action2.png)
+![](./images/configuration_for_action1.png)
+![](./images/configuration_for_action2.png)
 
 By this setting, Zabbix will dispatch event to StackStorm when the registered trigger makes an alert.
 

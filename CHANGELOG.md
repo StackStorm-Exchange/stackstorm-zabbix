@@ -16,7 +16,7 @@
 
 ### Fixed
 
-- Fixed typos in README
+- Fixed typos in README and ported images from persoanl repository of a contributor
 - Fixed to be able to overwrite Zabbix configuration for StackStorm by `register_st2_config_to_zabbix.py`
 
 
