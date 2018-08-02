@@ -28,7 +28,10 @@ class ZabbixDispatcher(BaseCLIApp):
         }
 
         # send request to st2api to dispatch trigger of Zabbix
-        self.client.managers['Webhook'].client.post('/webhooks/st2', body)
+        return self.client.managers['Webhook'].client.post('/webhooks/st2', body, headers={
+            'Content-Type': 'application/json',
+            'X-Auth-Token': self.client.token,
+        })
 
 
 def get_options():
@@ -38,8 +41,10 @@ def get_options():
                       help="Login username of StackStorm")
     parser.add_option('--st2-passwd', dest="st2_passwd", default="",
                       help="Login password associated with the user")
-    parser.add_option('--st2-host', dest="st2_host", default="localhost",
-                      help="Hostname or IP address which is run StackStorm")
+    parser.add_option('--st2-api-url', dest="api_url", default="https://localhost/api/v1",
+                      help="Endpoint URL for API")
+    parser.add_option('--st2-auth-url', dest="auth_url", default="https://localhost/auth/v1",
+                      help="Endpoint URL for auth")
     parser.add_option('--alert-sendto', dest="alert_sendto", default="",
                       help="'Send to' value from user media configuration of Zabbix")
     parser.add_option('--alert-subject', dest="alert_subject", default="",
@@ -57,7 +62,7 @@ def get_options():
     #
     # So it's hard for us to parse the argument of zabbix mediatype using optparse.
     # Then, I decided to fix the order of the CLI arguemnts.
-    arg_list = ['st2_host', 'st2_userid', 'st2_passwd',
+    arg_list = ['api_url', 'auth_url', 'st2_userid', 'st2_passwd',
                 'alert_sendto', 'alert_subject', 'alert_message']
 
     (options, args) = parser.parse_args()

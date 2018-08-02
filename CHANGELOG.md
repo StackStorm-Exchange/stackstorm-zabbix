@@ -1,5 +1,25 @@
 # Change Log
 
+## 0.1.7
+
+### Changed
+
+- Changed MediaType parameter of StackStorm to access through the API endpoints instead of accessing
+  directly to each service processes.
+- Changed `st2_dispatch.py` to conform to be able to communicate with up to date st2api (v2.8).
+
+  **Note:** This change is backward incompatible -- the interface of `st2_dispatch.py` is changed from
+  `--st2-host` to `--st2-api-url` and `--st2-auth-url` to be able to dispach trigger through proxy.  
+  To update from previous version to this, you should execute `register_st2_config_to_zabbix.py` command.
+  This resets configuration of Zabbix for conforming to the interface of current `st2_dispatch.py`
+  to dispatch `zabbix.event_handler`.
+
+### Fixed
+
+- Fixed typos in README and ported images from persoanl repository of a contributor
+- Fixed to be able to overwrite Zabbix configuration for StackStorm by `register_st2_config_to_zabbix.py`
+
+
 ## 0.1.6
 
 - Fixed typo in `tools/scripts/st2_dispatch.py`.

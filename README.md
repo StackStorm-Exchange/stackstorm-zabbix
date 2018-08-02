@@ -1,7 +1,7 @@
 # Zabbix Integration Pack
 This pack provides the capability to handle alerts from Zabbix and actions to it. This pack set configurations of Zabbix to dispatch event to the Trigger `zabbix.event_handler` along with the raises of Zabbix Alert. This describes the internal construction of this pack.
 
-![Internal construction of this pack](https://raw.githubusercontent.com/userlocalhost/st2-zabbix/images_for_README/images/internal_construction.png)
+![Internal construction of this pack](./images/internal_construction.png)
 
 # Requirements
 The system requirement of this pack is
@@ -13,7 +13,7 @@ First of all, you can install this pack as below
 $ st2 pack install zabbix
 ```
 
-After that you can set configurations for dispatching StackStorm's Trigger "zabbix.event_handler" to Zabbix by `/opt/stackstorm/pack/zabbix/tools/register_st2_config_to_zabbix.py` command. This is the usage of it.
+After that you can set configurations for dispatching StackStorm's Trigger "zabbix.event_handler" to Zabbix by `/opt/stackstorm/packs/zabbix/tools/register_st2_config_to_zabbix.py` command. This is the usage of it.
 ```
 Usage: register_st2_config_to_zabbix.py [options]
 
@@ -33,7 +33,7 @@ Options:
 And here is an example to execute it.
 ```
 $ source /opt/stackstorm/virtualenvs/zabbix/bin/activate
-$ /opt/stackstorm/pack/zabbix/tools/register_st2_config_to_zabbix.py -z http://zabbix-host/zabbix -u Admin -p zabbix
+$ /opt/stackstorm/packs/zabbix/tools/register_st2_config_to_zabbix.py -z http://zabbix-host/zabbix -u Admin -p zabbix
 ```
 
 This will register a new MediaType (`StackStorm`) to dispatch events and add an action (`Dispatching to StackStorm`) which is associated with it.
@@ -42,9 +42,11 @@ When you created a new Zabbix-Trigger and link it to the Action, StackStorm woul
 ## Zabbix configuration
 
 ### MediaType for the StackStorm
-After adding the configurations to the Zabbix, you need to modify the parameters that specify the Hostname (or IP address) of StackStorm node and username and password to auehtnticate with StackStorm from the Zabbix-portal. You can do it by accessing the page of `Administration` > `MediaType`.
-![](https://raw.githubusercontent.com/userlocalhost/st2-zabbix/images_for_README/images/configuration_for_mediatype1.png)
-![](https://raw.githubusercontent.com/userlocalhost/st2-zabbix/images_for_README/images/configuration_for_mediatype2.png)
+After executing the `register_st2_config_to_zabbix.py` command, you can notice that new MediaType `StackStorm` is added on `Media types` page (you can move on by `Administration` > `MediaType`). And you also have to this configuration to send a request for dispatching trigger of StackStorm when Zabbix server detect an alert. Please click the `StackStorm` mediatype.
+![](./images/configuration_for_mediatype1.png)
+
+You see following page, and you have to fill out with parameters for your st2 environment (the endpoint URLs of st2-api and st2-auth, and authentication informations).
+![](./images/configuration_for_mediatype2.png)
 
 You can specify the additional parameters and you can handle them from the payload of the StackStorm's Trigger(`zabbix.event_handler`).
 
@@ -63,8 +65,8 @@ $ sudo cp /opt/stackstorm/pack/zabbix/tools/scripts/st2_dispatch.py /usr/lib/zab
 
 ### Action
 You can link arbitrary Trigger (of Zabbix) to the action (`Dispatching to StackStorm`) which is registered by the setup command like this.
-![](https://raw.githubusercontent.com/userlocalhost/st2-zabbix/images_for_README/images/configuration_for_action1.png)
-![](https://raw.githubusercontent.com/userlocalhost/st2-zabbix/images_for_README/images/configuration_for_action2.png)
+![](./images/configuration_for_action1.png)
+![](./images/configuration_for_action2.png)
 
 By this setting, Zabbix will dispatch event to StackStorm when the registered trigger makes an alert.
 
