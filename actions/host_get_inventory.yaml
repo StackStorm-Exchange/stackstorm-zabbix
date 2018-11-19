@@ -1,0 +1,12 @@
+---
+name: host_get_inventory
+pack: zabbix
+runner_type: python-script
+description: Get the inventory of one or more Zabbix Hosts
+enabled: true
+entry_point: host_get_inventory.py
+parameters:
+    host_ids:
+        type: array
+        description: "List of Host IDs to find inventory items for"
+        required: True
