@@ -60,7 +60,7 @@ You can specify additional parameters and you can handle them from the payload o
 
 ### Deploy the AlertScript
 
-The script `st2_dispatcher.py` sends Zabbix events to the StackStorm server. Copy this script to the directory which Zabbix MediaType refers to. The directory is specified by the parameter of `AlertScriptsPath` in the Zabbix configuration file on the node which zabbix was installed.
+The script `st2_dispatch.py` sends Zabbix events to the StackStorm server. Copy this script to the directory which Zabbix MediaType refers to. The directory is specified by the parameter of `AlertScriptsPath` in the Zabbix configuration file on the node which zabbix was installed.
 ```shell
 $ grep 'AlertScriptsPath' /etc/zabbix/zabbix_server.conf
 ### Option: AlertScriptsPath
@@ -68,7 +68,7 @@ $ grep 'AlertScriptsPath' /etc/zabbix/zabbix_server.conf
 AlertScriptsPath=/usr/lib/zabbix/alertscripts
 ```
 
-This pack requires you to deploy this `st2_dispatcher.py` in its directory (and setup executional environment if necessary) on the Zabbix installed node. Set it up depending on your environment as below:
+This pack requires you to deploy this `st2_dispatch.py` in its directory (and setup executional environment if necessary) on the Zabbix installed node. Set it up depending on your environment as below:
 
 #### Case: single node
 
@@ -76,7 +76,7 @@ Both of StackStorm and Zabbix are installed on the same system:
 
 <img src="./images/description_alertscript1.png" width="350">
 
-This case is quite simple. All you have to do is copy `st2_dispatcher.py` to the directory which AlertScripts should be located.
+This case is quite simple. All you have to do is copy `st2_dispatch.py` to the directory which AlertScripts should be located.
 ```shell
 $ sudo cp /opt/stackstorm/packs/zabbix/tools/scripts/st2_dispatch.py /usr/lib/zabbix/alertscripts/
 ```
@@ -87,7 +87,7 @@ Zabbix and StackStorm are installed on separate systems, with IP connectivity be
 
 <img src="./images/description_alertscript2.png" width="350">
 
-In this case, you have to do two things (deploying and making executional environment) to set it up. First copy `st2_dispatcher.py` from the StackStorm server to the AlertScript directory on the Zabbix node.
+In this case, you have to do two things (deploying and making executional environment) to set it up. First copy `st2_dispatch.py` from the StackStorm server to the AlertScript directory on the Zabbix node.
 
 ```shell
 ubuntu@zabbix-node:~$ scp st2-node:/opt/stackstorm/packs/zabbix/tools/scripts/st2_dispatch.py ./
