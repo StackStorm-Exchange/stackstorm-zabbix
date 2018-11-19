@@ -24,6 +24,7 @@ class HostGetStatus(ZabbixBaseAction):
         self.connect()
 
         # Find inventory by host ids
-        inventory = self.client.host.get(hostids=host_ids, selectInventory='extend', output=['hostid', 'inventory'])
+        inventory = self.client.host.get(
+            hostids=host_ids, selectInventory='extend', output=['hostid', 'inventory'])
 
         return inventory
