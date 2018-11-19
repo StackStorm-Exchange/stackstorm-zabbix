@@ -24,15 +24,6 @@ class HostGetStatus(ZabbixBaseAction):
         self.connect()
 
         # Find inventory by host ids
-        items = self.client.item.get(hostids=host_ids)
+        inventory = self.client.host.get(hostids=host_ids, selectInventory='extend', output=['hostid', 'inventory'])
 
-        hosts = []
-        for _id in host_ids:
-            host = {"id": _id, "inventory": []}
-            for i in items:
-                if _id == i['hostid'] and i['inventory_link'] != '0':
-                    item = {"name": i['name'], "value": i['lastvalue']}
-                    host['inventory'].append(item)
-            hosts.append(host)
-
-        return hosts
+        return inventory
