@@ -5,6 +5,7 @@ from host_get_inventory import HostGetInventory
 
 from urllib2 import URLError
 
+
 class HostGetInventoryTestCase(ZabbixBaseActionTestCase):
     __test__ = True
     action_cls = HostGetInventory
@@ -32,7 +33,9 @@ class HostGetInventoryTestCase(ZabbixBaseActionTestCase):
 
         result = action.run(**test_dict)
         mock_client.host.get.assert_called_with(
-            hostids=test_dict['host_ids'], selectInventory='extend', output=['hostid', 'inventory'])
+            hostids=test_dict['host_ids'],
+            selectInventory='extend',
+            output=['hostid', 'inventory'])
         self.assertEqual(result, inventory_list)
 
     @mock.patch('lib.actions.ZabbixAPI')
@@ -65,7 +68,9 @@ class HostGetInventoryTestCase(ZabbixBaseActionTestCase):
 
         result = action.run(**test_dict)
         mock_client.host.get.assert_called_with(
-            hostids=test_dict['host_ids'], selectInventory='extend', output=['hostid', 'inventory'])
+            hostids=test_dict['host_ids'],
+            selectInventory='extend',
+            output=['hostid', 'inventory'])
         self.assertEqual(result, expected_return)
 
     @mock.patch('lib.actions.ZabbixAPI')
@@ -74,10 +79,10 @@ class HostGetInventoryTestCase(ZabbixBaseActionTestCase):
         action = self.get_action_instance(self.full_config)
         mock_connect.return_vaue = "connect return"
         test_dict = {'host_ids': ["12345", "98765"]}
-        inventory_list = [{'hostid': "12345", 'inventory': 
-                          {'serialno_a': "abcd1234", 'name': "test"}},
-                          {'hostid': "98765", 'inventory': 
-                          {'serialno_a': "efgh5678", 'name': "test2"}}]
+        inventory_list = [{'hostid': "12345", 'inventory':
+                           {'serialno_a': "abcd1234", 'name': "test"}},
+                          {'hostid': "98765", 'inventory':
+                           {'serialno_a': "efgh5678", 'name': "test2"}}]
         action.connect = mock_connect
         mock_client.host.get.return_value = inventory_list
         action.client = mock_client
@@ -88,5 +93,7 @@ class HostGetInventoryTestCase(ZabbixBaseActionTestCase):
 
         result = action.run(**test_dict)
         mock_client.host.get.assert_called_with(
-            hostids=test_dict['host_ids'], selectInventory='extend', output=['hostid', 'inventory'])
+            hostids=test_dict['host_ids'],
+            electInventory='extend',
+            output=['hostid', 'inventory'])
         self.assertEqual(result, expected_return)
