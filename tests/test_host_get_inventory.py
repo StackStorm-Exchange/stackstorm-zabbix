@@ -4,8 +4,6 @@ from zabbix_base_action_test_case import ZabbixBaseActionTestCase
 from host_get_inventory import HostGetInventory
 
 from urllib2 import URLError
-from pyzabbix.api import ZabbixAPIException
-
 
 class HostGetInventoryTestCase(ZabbixBaseActionTestCase):
     __test__ = True
@@ -76,8 +74,10 @@ class HostGetInventoryTestCase(ZabbixBaseActionTestCase):
         action = self.get_action_instance(self.full_config)
         mock_connect.return_vaue = "connect return"
         test_dict = {'host_ids': ["12345", "98765"]}
-        inventory_list = [{'hostid': "12345", 'inventory': {'serialno_a': "abcd1234", 'name': "test"}},
-                          {'hostid': "98765", 'inventory': {'serialno_a': "efgh5678", 'name': "test2"}}]
+        inventory_list = [{'hostid': "12345", 'inventory': 
+                          {'serialno_a': "abcd1234", 'name': "test"}},
+                          {'hostid': "98765", 'inventory': 
+                          {'serialno_a': "efgh5678", 'name': "test2"}}]
         action.connect = mock_connect
         mock_client.host.get.return_value = inventory_list
         action.client = mock_client
