@@ -17,7 +17,7 @@ from lib.actions import ZabbixBaseAction
 from pyzabbix.api import ZabbixAPIException
 
 
-class HostGetStatus(ZabbixBaseAction):
+class HostGetInventory(ZabbixBaseAction):
 
     def run(self, host_ids=None):
         """ Gets the inventory of one or more Zabbix Hosts.
