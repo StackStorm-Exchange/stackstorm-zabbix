@@ -94,6 +94,6 @@ class HostGetInventoryTestCase(ZabbixBaseActionTestCase):
         result = action.run(**test_dict)
         mock_client.host.get.assert_called_with(
             hostids=test_dict['host_ids'],
-            electInventory='extend',
+            selectInventory='extend',
             output=['hostid', 'inventory'])
         self.assertEqual(result, expected_return)
