@@ -14,6 +14,7 @@
 # limitations under the License.
 
 from lib.actions import ZabbixBaseAction
+from pyzabbix.api import ZabbixAPIException
 
 
 class HostGetStatus(ZabbixBaseAction):
@@ -24,7 +25,11 @@ class HostGetStatus(ZabbixBaseAction):
         self.connect()
 
         # Find inventory by host ids
-        inventory = self.client.host.get(
-            hostids=host_ids, selectInventory='extend', output=['hostid', 'inventory'])
+        try:
+            inventory = self.client.host.get(
+                hostids=host_ids, selectInventory='extend', output=['hostid', 'inventory'])
+        except ZabbixAPIException as e:
+            raise ZabbixAPIException(("There was a problem searching for the host: "
+                                      "{0}".format(e)))
 
         return inventory
