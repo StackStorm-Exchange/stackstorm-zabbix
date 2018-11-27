@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.1.8
+
+### Added
+
+- New Action: `host_get_inventory` - Get the inventory of one or more Zabbix Hosts
+
 ## 0.1.7
 
 ### Changed
