@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.1.9
+
+- Version bump to fix tagging issue. No code change
+
 ## 0.1.8
 
 ### Added

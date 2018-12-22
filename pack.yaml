@@ -1,10 +1,10 @@
 ---
 ref: zabbix
 name: zabbix
-description: StackStorm pack that contains Zabbix integrations
+description: Zabbix Monitoring System
 keywords:
   - zabbix
   - monitoring
-version: 0.1.8
+version: 0.1.9
 author: Hiroyasu OHYAMA
 email: user.localhost2000@gmail.com
