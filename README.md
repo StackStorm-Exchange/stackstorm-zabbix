@@ -39,9 +39,11 @@ Options:
 Example execution:
 
 ```shell
-$ source /opt/stackstorm/virtualenvs/zabbix/bin/activate
-$ /opt/stackstorm/packs/zabbix/tools/register_st2_config_to_zabbix.py -z http://zabbix-host/zabbix -u Admin -p zabbix
+$ /opt/stackstorm/virtualenvs/zabbix/bin/python /opt/stackstorm/packs/zabbix/tools/register_st2_config_to_zabbix.py -z http://zabbix-host/zabbix -u Admin -p zabbix
 ```
+
+NOTE: It's important you use ``python`` binary from the pack virtual environment (``/opt/stackstorm/virtualenvs/zabbix/bin/python``)
+and not the system one. If you use system Python binary you will see error similar to ``ImportError: No module named zabbix.api``.
 
 This will register a new MediaType (`StackStorm`) to dispatch events and add an associated action (`Dispatching to StackStorm`).
 
