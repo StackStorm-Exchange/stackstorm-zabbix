@@ -61,7 +61,7 @@ def register_media_type(client, options, mediatype_id=None):
     mediatype_args = [
         '-- CHANGE ME : api_url  (e.g. https://st2-node/api/v1)',
         '-- CHANGE ME : auth_url (e.g. https://st2-node/auth/v1)',
-        '-- CHANGE ME : login uername of StackStorm --',
+        '-- CHANGE ME : login username of StackStorm --',
         '-- CHANGE ME : login password of StackStorm --',
         '{ALERT.SENDTO}',
         '{ALERT.SUBJECT}',
