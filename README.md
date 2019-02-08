@@ -7,7 +7,7 @@ This README explains how this integration works, and how to configure it.
 
 # Requirements
 
-* Zabbix >3.0. It has been tested with v3.0 and v3.2.
+* Zabbix >3.0. It has been tested with v3.0, v3.2 and v4.0.
 
 # Installation
 Install the pack:
