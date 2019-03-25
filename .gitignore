@@ -87,3 +87,10 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Auto generated files by Bundler and Rspec
+Gemfile.lock
+.rspec
+
+# temporary files of Vim
+.*.sw*
