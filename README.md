@@ -198,3 +198,50 @@ You need to set configure the Zabbix pack before running actions:
 | zabbix.maintenance_create_or_update   | Create or update Zabbix Maintenance Window |
 | zabbix.maintenance_delete             | Delete Zabbix Maintenance Window |
 | zabbix.test_credentials               | Tests if it credentials in the config are valid |
+
+# Running Test
+## Unit Test
+You can run unit tests by `st2-run-pack-tests` command that is provided by [StackStorm](https://github.com/StackStorm/st2) as below.
+
+```
+$ git clone git@github.com:StackStorm-Exchange/stackstorm-zabbix.git
+$ git clone git@github.com:StackStorm/st2.git
+$ st2/st2common/bin/st2-run-pack-tests -x -p ~/stackstorm-zabbix/
+```
+
+For more detail on this topic, please see the [official document page](https://docs.stackstorm.com/development/pack_testing.html).
+
+## Integration Test
+You can also run test with actual Zabbix server and Zabbix API server in your local environment using Zabbix Docker Images ([zabbix-server-mysql](https://hub.docker.com/r/zabbix/zabbix-server-mysql) and [zabbix-web-nginx-mysql](https://hub.docker.com/r/zabbix/zabbix-web-nginx-mysql)) and [Serverspec](https://serverspec.org/). This describes how to run the integration tests.
+
+### 0. Preparing for running RSpec tests
+For the first time in your environment to run this test, it's necessary to make an environment for RSpec as below.
+```
+$ cd stackstorm-zabbix
+$ gem install bundler
+$ bundle install
+```
+To make this environment by this procedure, you have to install Ruby (`v2.4` or later).
+
+### 1. Running Docker images for Zabbix
+You can run Zabbix services (Zabbix server and Zabbix Web API) for the integration test so quickly using Docker. To run these containers you should specify the environment variable of TAG which means Zabbix version of container to start.
+This command starts Docker containers of both Zabbix services which are `v3.2`.
+
+```
+$ TAG=ubuntu-3.2-latest docker-compose up -d
+```
+
+When you want to start Zabbix v4.0 containers, you can do it like this.
+
+```
+$ TAG=ubuntu-4.0-latest docker-compose up -d
+```
+
+All values you could specify in this variable is [here](https://hub.docker.com/r/zabbix/zabbix-server-mysql/tags).
+
+### 2. Running tests
+Starting procedure to run the test is also simple, all you have to do is executing rspec as below.
+
+```
+$ bundle exec rspec
+```

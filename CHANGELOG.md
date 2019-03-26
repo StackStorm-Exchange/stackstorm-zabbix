@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.1.10
+
+- The script that registers st2's configuration to Zabbix would be compatible with Zabbix v4.0.
+- An integration test for `register_st2_config_to_zabbix.py` with different version of Zabbix was added.
+- A configuration file of docker-compose was added for running integration test in local machine.
+
 ## 0.1.9
 
 - Version bump to fix tagging issue. No code change

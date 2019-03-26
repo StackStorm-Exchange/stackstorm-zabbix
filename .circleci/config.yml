@@ -1,31 +1,7 @@
 version: 2.1
 
-jobs:
+commands:
   integration_test_with_zabbix:
-    parameters:
-      zabbix_image_tag:
-        type: string
-
-    docker:
-      - image: circleci/ruby:2.4-jessie
-      - image: mysql:5.7
-        environment:
-          MYSQL_DATABASE: zabbix
-          MYSQL_USER: zabbix
-          MYSQL_PASSWORD: zabbix
-          MYSQL_ROOT_PASSWORD: passwd
-
-      - image: "zabbix/zabbix-server-mysql:<< parameters.zabbix_image_tag >>"
-        environment:
-          DB_SERVER_HOST: 127.0.0.1
-          MYSQL_ROOT_PASSWORD: passwd
-
-      - image: "zabbix/zabbix-web-nginx-mysql:<< parameters.zabbix_image_tag >>"
-        environment:
-          DB_SERVER_HOST: 127.0.0.1
-          MYSQL_ROOT_PASSWORD: passwd
-
-    working_directory: ~/repo
     steps:
       - checkout
       - run:
@@ -37,6 +13,48 @@ jobs:
             sudo pip install -r requirements.txt
             bundle install
             bundle exec rspec
+
+executors:
+  zabbix:
+    parameters:
+      tag:
+        type: string
+        default: latest
+    docker:
+      - image: circleci/ruby:2.4-jessie
+      - image: mysql:5.7
+        environment:
+          MYSQL_DATABASE: zabbix
+          MYSQL_USER: zabbix
+          MYSQL_PASSWORD: zabbix
+          MYSQL_ROOT_PASSWORD: passwd
+
+      - image: "zabbix/zabbix-server-mysql:<< parameters.tag >>"
+        environment:
+          DB_SERVER_HOST: 127.0.0.1
+          MYSQL_ROOT_PASSWORD: passwd
+
+      - image: "zabbix/zabbix-web-nginx-mysql:<< parameters.tag >>"
+        environment:
+          DB_SERVER_HOST: 127.0.0.1
+          MYSQL_ROOT_PASSWORD: passwd
+
+jobs:
+  integration_test_with_zabbix_32:
+    executor:
+      name: zabbix
+      tag: ubuntu-3.2-latest
+    working_directory: ~/repo
+    steps:
+      - integration_test_with_zabbix
+
+  integration_test_with_zabbix_40:
+    executor:
+      name: zabbix
+      tag: ubuntu-4.0-latest
+    working_directory: ~/repo
+    steps:
+      - integration_test_with_zabbix
 
   build_and_test_python27:
     docker:
@@ -152,10 +170,8 @@ workflows:
   # Workflow which runs on each push
   build_test_deploy_on_push:
     jobs:
-      - integration_test_with_zabbix:
-          zabbix_image_tag: ubuntu-3.2-latest
-      - integration_test_with_zabbix:
-          zabbix_image_tag: ubuntu-4.0-latest
+      - integration_test_with_zabbix_32
+      - integration_test_with_zabbix_40
       - build_and_test_python27
       - build_and_test_python36
       - deploy:
