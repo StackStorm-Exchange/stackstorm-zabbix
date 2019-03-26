@@ -1,6 +1,43 @@
-version: 2
+version: 2.1
 
 jobs:
+  integration_test_with_zabbix:
+    parameters:
+      zabbix_image_tag:
+        type: string
+
+    docker:
+      - image: circleci/ruby:2.4-jessie
+      - image: mysql:5.7
+        environment:
+          MYSQL_DATABASE: zabbix
+          MYSQL_USER: zabbix
+          MYSQL_PASSWORD: zabbix
+          MYSQL_ROOT_PASSWORD: passwd
+
+      - image: "zabbix/zabbix-server-mysql:<< parameters.zabbix_image_tag >>"
+        environment:
+          DB_SERVER_HOST: 127.0.0.1
+          MYSQL_ROOT_PASSWORD: passwd
+
+      - image: "zabbix/zabbix-web-nginx-mysql:<< parameters.zabbix_image_tag >>"
+        environment:
+          DB_SERVER_HOST: 127.0.0.1
+          MYSQL_ROOT_PASSWORD: passwd
+
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run:
+          name: Execute integration test with Zabbix
+          command: |
+            set -x
+            sudo apt -y install python-pip
+            sudo pip install pip --upgrade
+            sudo pip install -r requirements.txt
+            bundle install
+            bundle exec rspec
+
   build_and_test_python27:
     docker:
       - image: circleci/python:2.7
@@ -115,6 +152,10 @@ workflows:
   # Workflow which runs on each push
   build_test_deploy_on_push:
     jobs:
+      - integration_test_with_zabbix:
+          zabbix_image_tag: ubuntu-3.2-latest
+      - integration_test_with_zabbix:
+          zabbix_image_tag: ubuntu-4.0-latest
       - build_and_test_python27
       - build_and_test_python36
       - deploy:
