@@ -128,18 +128,32 @@ def register_action(client, mediatype_id, options, action_id=None):
 
 
 def register_media_to_admin(client, mediatype_id, options):
-    return client.user.addmedia(**{
-        "users": [
-            {"userid": "1"},
-        ],
-        "medias": {
-            "mediatypeid": mediatype_id,
-            "sendto": options.z_sendto,
-            "active": "0",
-            "severity": "63",
-            "period": "1-7,00:00-24:00",
-        }
-    })
+    major_version = int(client.apiinfo.version()[0])
+    if major_version >= 4:
+        # This is because user.addmedia api was removed from Zabbix 4.0.
+        return client.user.update(**{
+            "userid": "1",
+            "user_medias": [{
+                "mediatypeid": mediatype_id,
+                "sendto": options.z_sendto,
+                "active": "0",
+                "severity": "63",
+                "period": "1-7,00:00-24:00",
+            }]
+        })
+    else:
+        return client.user.addmedia(**{
+            "users": [
+                {"userid": "1"},
+            ],
+            "medias": {
+                "mediatypeid": mediatype_id,
+                "sendto": options.z_sendto,
+                "active": "0",
+                "severity": "63",
+                "period": "1-7,00:00-24:00",
+            }
+        })
 
 
 def main():
