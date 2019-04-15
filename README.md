@@ -162,7 +162,8 @@ This trigger has these parameters:
 | alert_message | describe detail of alert (see following) |
 | extra_args    | describe optional user-defined values (default is `[]`) |
 
-In the `alert_message` parameter, the context is contained as JSON format (but the parameter value is string because of the functional restriction of Zabbix). You can parse it in an action to be passed these parameter.
+In the `alert_message` parameter, the value will be reflective of how it was structured in zabbix. 
+With the default configuration of 'Default message' by `register_st2_config_to_zabbix.py`
 
 | Parameter of `alert_message` | Description of context |
 |:-----------------------------|:-----------------------|
@@ -179,6 +180,8 @@ In the `alert_message` parameter, the context is contained as JSON format (but t
 
 (These configuration values are corresponding to [the Macros of Zabbix](https://www.zabbix.com/documentation/3.2/manual/appendix/macros/supported_by_location))
 
+You can also modify 'Default message' in the 'Operations' tab of your 'Action' to be structured as a JSON Array, JSON Dict, or a string, and the trigger will receive it that way.
+
 # StackStorm Configuration
 You need to set configure the Zabbix pack before running actions:
 
@@ -191,10 +194,14 @@ You need to set configure the Zabbix pack before running actions:
 # Action
 | Reference of the Action               | Description |
 |:--------------------------------------|:------------|
-| zabbix.ack_event                      | Send acknowledgement message for an event to Zabbix and may close it |
-| zabbix.host_get_id                    | Get the ID of a Zabbix Host |
-| zabbix.host_update_status             | Update the status of a Zabbix Host |
+| zabbix.ack_event                      | Send acknowledgement message for an event to Zabbix and if Zabbix may close it |
 | zabbix.host_delete                    | Delete a Zabbix Host |
+| zabbix.host_delete_by_id              | Delete a Zabbix Host by it's Id |
+| zabbix.host_get_id                    | Get the ID of a Zabbix Host |
+| zabbix.host_get_inventory             | Get the inventory of one or more Zabbix Hosts |
+| zabbix.host_get_multiple_ids          | Get the IDs of multiple Zabbix Hosts |
+| zabbix.host_get_status                | Get the status of a Zabbix Host |
+| zabbix.host_update_status             | Update the status of a Zabbix Host |
 | zabbix.maintenance_create_or_update   | Create or update Zabbix Maintenance Window |
 | zabbix.maintenance_delete             | Delete Zabbix Maintenance Window |
 | zabbix.test_credentials               | Tests if it credentials in the config are valid |
@@ -245,3 +252,63 @@ Starting procedure to run the test is also simple, all you have to do is executi
 ```
 $ bundle exec rspec
 ```
+
+# Advanced Usage
+If you would prefer to use an API Key for auth in place of user/pass, you can do so by passing a JSON Dict as the first positional argument in your `Media Type` in place of:
+```
+https://st2-node/api/v1
+https://st2-node/auth/v1
+st2user
+st2pass
+```
+### Valid Keys
+This dict has the following valid keys
+- `st2_userid`
+- `st2_passwd`
+- `api_url`
+- `auth_url`
+- `api_key`
+- `trigger`
+- `skip_config`
+- `config_file`
+
+`api_url` is always required
+`auth_url` is only required when using `st2_userid` and `st2_passwd`  
+`api_key` will cause `st2_userid` and `st2_passwd` to be ignored (API Key prefered)  
+`trigger` allows you to specify your own trigger on st2 to send messages to. Default is `zabbix.event_handler`
+
+### JSON Examples
+API Key for Auth - `{"api_url":"https://stackstorm.yourdomain.com/api/v1", "api_key":"aaabbbccc111222333"}`  
+User/Pass for auth - `{"api_url":"https://stackstorm.yourdomain.com/api/v1", "auth_url":"https://stackstorm.yourdomain.com/api/v1", "st2_userid":"st2admin", "st2_passwd":"st2pass"}`  
+API Key and send to custom trigger - `{"api_url":"https://stackstorm.yourdomain.com/api/v1", "api_key":"aaabbbccc111222333", "trigger": "pack.my_custom_trigger"}`  
+
+![](./images/apikey_example.png)
+
+# Zabbix Gotcha's
+
+#### Max 255 total parameter characters per Media Type
+(Zabbix 3.4) Zabbix has a default limitation of 255 characters that can be stored cumulatively for media type parameters. This is due to the default setting in the database column `exec_params` of `varchar(255)`. Modify this at your own risk.
+
+#### Media Type Parameter serialization
+(Zabbix 3.4) When you save the parameters for your media type, Zabbix serializes them into a single string, and stores them in the database under `exec_params`
+
+#### Media Type Parameter line endings
+(Zabbix 3.4) When parameters are serialized, they are delimited by a single newline (LF) character (\n). Specifically it is not CRLF (\r\n).  
+This means when your parameters are serialized, there is +n characters against the 255 limit, where n = number of parameters. (one \n per parameter)
+
+#### Media Type Parameter de-serialization
+(Zabbix 3.4) When Zabbix calls and executes a script for a Media Type, it takes the serialized string of parameters, and passes them to the script as individual strings with newline characters at the end.
+
+##### Literal representation
+```shell
+$./st2_dispatch.py 'first parameter' \
+'second parameter ' \
+'third parameter'
+```
+
+This is why you can't input `--flag value` as a parameters, because its passed literally as `'--flag value'\n`
+
+#### Relationship of Zabbix Functions
+Zabbix's dependencies for the various parts that go into doing something simple as "tell me when a device goes down" can be confusing, so here's a diagram.
+
+![](./images/zabbix_dependency_flow.png)

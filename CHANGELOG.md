@@ -1,5 +1,32 @@
 # Change Log
 
+## 0.1.11
+
+### Changes
+
+- `triggers/event_handler.yaml` - `alert_message` type updated to include `array`, `object` 
+  with logic in `st2_dispatch.py` to handle the difference.
+- `st2_dispatch.py` flags: `--st2-api-url` and `--st2-auth-url` no longer have default values.
+  See code comments for details.
+
+### Additions
+
+- API Keys can now be used to authenticate to the ST2 API. Please see the 'Advanced Usage'
+  section in the readme for more details.
+- `--api-key` flag can be passed to `st2_dispatch.py` to test usage with an API Key for authentication
+- `st2_dispatch.py` can now send to a user defined trigger, but defaults to `zabbix.event_handler`
+- The value of `alert_message` passed in from the Zabbix macro `{ALERT.MESSAGE}` will now be evaluated
+  to determine if its a JSON valid List or Dict, or a string, and passed accordingly.
+- When using a JSON Dict to pass auth parameters, keys and values passed are parsed as is into options
+  that can then be used in later logic.
+  This means you can pass any valid option as a key:val pair (`st2_userid`, `st2_passwd`, `trigger`, etc)
+  - This excludes `alert_sendto`, `alert_subject`, `alert_message` as they are parsed after the JSON Dict
+
+### Fixes
+
+- Corrected a bug in `ack_event.yaml` where `enum:` was applied with `type: boolean`. Fixes #32
+- `host_get_multiple_ids` - `type:` is now `array` (was `string`). Fixes #22
+
 ## 0.1.10
 
 - The script that registers st2's configuration to Zabbix would be compatible with Zabbix v4.0.

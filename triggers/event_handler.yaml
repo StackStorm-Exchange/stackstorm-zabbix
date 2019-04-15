@@ -10,7 +10,10 @@ payload_schema:
     alert_subject:
       type: string
     alert_message:
-      type: string
+      anyOf:
+        - type: array
+        - type: object
+        - type: string
     extra_args:
       type: array
       items:
