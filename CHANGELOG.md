@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.2.0
+
+### Added
+
+- `actions/create_host.yaml` - register a new host object to zabbix server.
+
 ## 0.1.11
 
 ### Changes
