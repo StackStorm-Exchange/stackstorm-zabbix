@@ -36,3 +36,19 @@ class CallAPITest(ZabbixBaseActionTestCase):
         result = action.run(api_method='hoge', token='test_token', param='foo')
         self.assertEqual(result, ((), {'param': 'foo'}))
         self.assertEqual(action.auth, 'test_token')
+
+    @mock.patch('lib.actions.ZabbixBaseAction.connect')
+    def test_call_hierarchized_method(self, mock_conn):
+        action = self.get_action_instance(self.full_config)
+
+        # Initialize client object that only accepts request to 'foo.bar' method.
+        action.client = mock.Mock(spec=['foo'])
+        action.client.foo = mock.Mock(spec=['bar'])
+        action.client.foo.bar.return_value = 'result'
+
+        # Send request with proper parameter
+        self.assertEqual(action.run(api_method='foo.bar', token=None, param='hoge'), 'result')
+
+        # Send request with invalid api_method
+        with self.assertRaises(RuntimeError):
+            action.run(api_method='foo.hoge', token=None, param='hoge')
