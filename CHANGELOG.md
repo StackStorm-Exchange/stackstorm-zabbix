@@ -1,5 +1,16 @@
 # Change Log
 
+## 0.3.0
+
+### Added
+
+- `actions/call_api.py` - A primitive pimplemenetation of `python-script` to send a request to specified API endpoint with other specified parameters.
+- `actions/list_host_groups.yaml` - List all host_groups objects which are registered in Zabbix
+- `actions/list_host_interfaces.yaml` - List all hostinterfaces objects which are registered in Zabbix
+- `actions/list_hosts.yaml` - List all host objects which are registered in Zabbix
+- `actions/list_templates.yaml` - List all templates objects which are registered in Zabbix
+- `actions/update_host.yaml` - A primitive action to update host information
+
 ## 0.2.0
 
 ### Added
