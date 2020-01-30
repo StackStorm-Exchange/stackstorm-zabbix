@@ -8,3 +8,6 @@ keywords:
 version: 0.3.0
 author: Hiroyasu OHYAMA
 email: user.localhost2000@gmail.com
+python_versions:
+  - "2"
+  - "3"
