@@ -5,7 +5,7 @@ import sys
 from optparse import OptionParser
 from zabbix.api import ZabbixAPI
 from pyzabbix.api import ZabbixAPIException
-from urllib2 import URLError
+from six.moves.urllib.error import URLError
 
 # This constant describes 'script' value of 'type' property in the MediaType,
 # which is specified in the Zabbix API specification.

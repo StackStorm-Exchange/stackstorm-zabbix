@@ -6,7 +6,7 @@ import mock
 from io import BytesIO
 from unittest import TestCase
 
-from urllib2 import URLError
+from six.moves.urllib.error import URLError
 from pyzabbix.api import ZabbixAPIException
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/../tools/')
