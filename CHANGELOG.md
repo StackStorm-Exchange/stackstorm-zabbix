@@ -1,5 +1,15 @@
 # Change Log
 
+## 0.3.1
+
+### Added
+
+- Explicitly specify supported Python versions
+
+### Changed
+
+- Fixups for Python 3
+
 ## 0.3.0
 
 ### Added
