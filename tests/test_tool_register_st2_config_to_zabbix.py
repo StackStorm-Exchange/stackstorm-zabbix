@@ -3,7 +3,7 @@ import re
 import sys
 import mock
 
-from io import BytesIO
+from six import StringIO
 from unittest import TestCase
 
 from six.moves.urllib.error import URLError
@@ -16,8 +16,8 @@ import register_st2_config_to_zabbix
 class TestRegisterMediaType(TestCase):
     def setUp(self):
         sys.argv = ['register_st2_config_to_zabbix.py']
-        self.io_stdout = BytesIO()
-        self.io_stderr = BytesIO()
+        self.io_stdout = StringIO()
+        self.io_stderr = StringIO()
         sys.stdout = self.io_stdout
         sys.stderr = self.io_stderr
 
