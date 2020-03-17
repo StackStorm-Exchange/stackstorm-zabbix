@@ -178,6 +178,8 @@ workflows:
           requires:
             - build_and_test_python27
             - build_and_test_python36
+            - integration_test_with_zabbix_32
+            - integration_test_with_zabbix_40
           filters:
             branches:
               only: master
