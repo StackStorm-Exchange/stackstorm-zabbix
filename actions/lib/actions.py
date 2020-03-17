@@ -15,7 +15,7 @@
 
 from pyzabbix.api import ZabbixAPIException
 from st2common.runners.base_action import Action
-from urllib2 import URLError
+from six.moves.urllib.error import URLError
 from zabbix.api import ZabbixAPI
 
 
