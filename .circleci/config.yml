@@ -45,6 +45,8 @@ jobs:
       name: zabbix
       tag: ubuntu-3.2-latest
     working_directory: ~/repo
+    environment:
+      ZABBIX_API: http://localhost/
     steps:
       - integration_test_with_zabbix
 
@@ -53,6 +55,8 @@ jobs:
       name: zabbix
       tag: ubuntu-4.0-latest
     working_directory: ~/repo
+    environment:
+      ZABBIX_API: http://localhost:8080/
     steps:
       - integration_test_with_zabbix
 
