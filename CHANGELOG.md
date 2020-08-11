@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.3.2
+
+- Extend `list_hosts` action to allow specifying a list of groupids (not possible in `filter`), as well as `output` to allow trimming of returned data.
+
 ## 0.3.1
 
 ### Added
@@ -31,7 +35,7 @@
 
 ### Changes
 
-- `triggers/event_handler.yaml` - `alert_message` type updated to include `array`, `object` 
+- `triggers/event_handler.yaml` - `alert_message` type updated to include `array`, `object`
   with logic in `st2_dispatch.py` to handle the difference.
 - `st2_dispatch.py` flags: `--st2-api-url` and `--st2-auth-url` no longer have default values.
   See code comments for details.
@@ -79,7 +83,7 @@
 - Changed `st2_dispatch.py` to conform to be able to communicate with up to date st2api (v2.8).
 
   **Note:** This change is backward incompatible -- the interface of `st2_dispatch.py` is changed from
-  `--st2-host` to `--st2-api-url` and `--st2-auth-url` to be able to dispach trigger through proxy.  
+  `--st2-host` to `--st2-api-url` and `--st2-auth-url` to be able to dispach trigger through proxy.
   To update from previous version to this, you should execute `register_st2_config_to_zabbix.py` command.
   This resets configuration of Zabbix for conforming to the interface of current `st2_dispatch.py`
   to dispatch `zabbix.event_handler`.
@@ -99,7 +103,7 @@
 
 - Added a new action `host_get_multiple_ids` that can retrieve 0, a single, or multiple zabbix hosts and
   return those as an array. This is for a race condition that exists when using several zabbix proxies.
-- Added a new action `host_delete_by_id` that allows a host to be deleted given the Host's ID instead of 
+- Added a new action `host_delete_by_id` that allows a host to be deleted given the Host's ID instead of
   the Host's Name
   Contributed by Brad Bishop (Encore Technologies)
 

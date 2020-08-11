@@ -5,13 +5,15 @@ from zabbix.api import ZabbixAPI
 class CallAPI(ZabbixBaseAction):
     def run(self, api_method, token, **params):
         # Initialize client object to connect Zabbix server
+
         if token:
             self.client = ZabbixAPI(url=self.config['zabbix']['url'])
             self.auth = token
         else:
             self.connect()
 
-        return self._call_api_method(self.client, api_method, params)
+        return self._call_api_method(self.client, api_method,
+            {k: v for k, v in params.items() if v is not None})  # dont include param where v=None
 
     def _call_api_method(self, client, api_method, params):
         """
