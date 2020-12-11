@@ -279,7 +279,7 @@ This dict has the following valid keys
 
 ### JSON Examples
 API Key for Auth - `{"api_url":"https://stackstorm.yourdomain.com/api/v1", "api_key":"aaabbbccc111222333"}`  
-User/Pass for auth - `{"api_url":"https://stackstorm.yourdomain.com/api/v1", "auth_url":"https://stackstorm.yourdomain.com/api/v1", "st2_userid":"st2admin", "st2_passwd":"st2pass"}`  
+User/Pass for auth - `{"api_url":"https://stackstorm.yourdomain.com/api/v1", "auth_url":"https://stackstorm.yourdomain.com/auth", "st2_userid":"st2admin", "st2_passwd":"st2pass"}`  
 API Key and send to custom trigger - `{"api_url":"https://stackstorm.yourdomain.com/api/v1", "api_key":"aaabbbccc111222333", "trigger": "pack.my_custom_trigger"}`  
 
 ![](./images/apikey_example.png)
