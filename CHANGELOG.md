@@ -1,5 +1,14 @@
 # Change Log
 
+## 0.4.0
+
+### Added
+- `actions/host_get_interfaces.yaml` - Gets the interfaces of one or more Zabbix Hosts
+
+### Updated
+- `actions/update_host.yaml` - Added some of the default host properties from the following link to allow them to be changed as well
+  https://www.zabbix.com/documentation/5.0/manual/api/reference/host/object
+
 ## 0.3.2
 
 - Extend `list_hosts` action to allow specifying a list of groupids (not possible in `filter`), as well as `output` to allow trimming of returned data.

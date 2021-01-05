@@ -9,9 +9,15 @@ parameters:
   hostid:
     type: string
     description: ID of Host to be updated
+  description:
+    type: string
+    description: Description of the host.
   groups:
     type: array
     description: Host groups to replace the current host groups the host belongs to.
+  host:
+    type: string
+    description: Technical name of the host.
   interfaces:
     type: array
     description: Host interfaces to replace the current host interfaces.
@@ -21,6 +27,9 @@ parameters:
   macros:
     type: array
     description: User macros to replace the current user macros.
+  name:
+    type: string
+    description: Visible name of the host.
   templates:
     type: array
     description: Templates to replace the currently linked templates.
