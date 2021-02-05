@@ -21,7 +21,7 @@ executors:
         type: string
         default: latest
     docker:
-      - image: circleci/ruby:2.4-jessie
+      - image: circleci/ruby:2.7.2-buster
       - image: mysql:5.7
         environment:
           MYSQL_DATABASE: zabbix
