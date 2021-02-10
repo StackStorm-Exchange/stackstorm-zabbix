@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.0.0
+
+- Drop python 2.7 support.
+
 ## 0.4.0
 
 ### Added
