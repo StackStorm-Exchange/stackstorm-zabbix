@@ -12,6 +12,7 @@ from six.moves.urllib.error import URLError
 SCRIPT_MEDIA_TYPE = '1'
 
 # This is a constant for the metadata of MediaType to be registered
+ST2_MEDIA_NAME = 'StackStorm'
 ST2_DISPATCHER_SCRIPT = 'st2_dispatch.py'
 ST2_ACTION_NAME = 'Dispatching to StackStorm'
 
@@ -70,6 +71,7 @@ def register_media_type(client, options, mediatype_id=None):
 
     # send request to register a new MediaType for StackStorm
     params = {
+        'name' : ST2_MEDIA_NAME,
         'description': 'StackStorm',
         'type': SCRIPT_MEDIA_TYPE,
         'exec_path': ST2_DISPATCHER_SCRIPT,
