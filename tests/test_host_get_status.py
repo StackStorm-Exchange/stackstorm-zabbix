@@ -3,7 +3,7 @@ import mock
 from zabbix_base_action_test_case import ZabbixBaseActionTestCase
 from host_get_status import HostGetStatus
 
-from urllib2 import URLError
+from six.moves.urllib.error import URLError
 from pyzabbix.api import ZabbixAPIException
 
 

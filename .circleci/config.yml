@@ -1,9 +1,68 @@
-version: 2
+version: 2.1
+
+commands:
+  integration_test_with_zabbix:
+    steps:
+      - checkout
+      - run:
+          name: Execute integration test with Zabbix
+          command: |
+            set -x
+            sudo apt -y install python3-pip
+            sudo pip3 install pip --upgrade
+            sudo pip3 install -r requirements.txt
+            bundle install
+            bundle exec rspec --format documentation
+
+executors:
+  zabbix:
+    parameters:
+      tag:
+        type: string
+        default: latest
+    docker:
+      - image: circleci/ruby:2.7.2-buster
+      - image: mysql:5.7
+        environment:
+          MYSQL_DATABASE: zabbix
+          MYSQL_USER: zabbix
+          MYSQL_PASSWORD: zabbix
+          MYSQL_ROOT_PASSWORD: passwd
+
+      - image: "zabbix/zabbix-server-mysql:<< parameters.tag >>"
+        environment:
+          DB_SERVER_HOST: 127.0.0.1
+          MYSQL_ROOT_PASSWORD: passwd
+
+      - image: "zabbix/zabbix-web-nginx-mysql:<< parameters.tag >>"
+        environment:
+          DB_SERVER_HOST: 127.0.0.1
+          MYSQL_ROOT_PASSWORD: passwd
 
 jobs:
-  build_and_test:
+  integration_test_with_zabbix_32:
+    executor:
+      name: zabbix
+      tag: ubuntu-3.2-latest
+    working_directory: ~/repo
+    environment:
+      ZABBIX_API: http://localhost/
+    steps:
+      - integration_test_with_zabbix
+
+  integration_test_with_zabbix_40:
+    executor:
+      name: zabbix
+      tag: ubuntu-4.0-latest
+    working_directory: ~/repo
+    environment:
+      ZABBIX_API: http://localhost:8080/
+    steps:
+      - integration_test_with_zabbix
+
+  build_and_test_python36:
     docker:
-      - image: circleci/python:2.7
+      - image: circleci/python:3.6
       - image: rabbitmq:3
       - image: mongo:3.4
 
@@ -11,24 +70,39 @@ jobs:
 
     environment:
       VIRTUALENV_DIR: "~/virtualenv"
+      # Don't install various StackStorm dependencies which are already
+      # installed by CI again in the various check scripts
+      ST2_INSTALL_DEPS: "0"
 
     steps:
       - checkout
       - restore_cache:
-          key: v1-dependency-cache-{{ checksum "requirements.txt" }}
+          key: v1-dependency-cache-py36-{{ checksum "requirements.txt" }}
       - run:
           name: Download dependencies
+          # NOTE: We don't want to use default "-e" option because this means
+          # step will fail immediately on one of the commands failures and we
+          # can't intercept the error and cause non-fatal exit in case pack
+          # doesn't declare support for Python 3
+          shell: /bin/bash
           command: |
-            git clone -b master git@github.com:stackstorm-exchange/ci.git ~/ci
-            ~/ci/.circle/dependencies
+            git clone -b master git://github.com/stackstorm-exchange/ci.git ~/ci
+            ~/ci/.circle/dependencies ; ~/ci/.circle/exit_on_py3_checks $?
       - run:
-          name: Run tests
-          command: ~/ci/.circle/test
+          name: Run tests (Python 3.6)
+          # NOTE: We don't want to use default "-e" option because this means
+          # step will fail immediately on one of the commands failures and we
+          # can't intercept the error and cause non-fatal exit in case pack
+          # doesn't declare support for Python 3
+          shell: /bin/bash
+          command: ~/ci/.circle/test ; ~/ci/.circle/exit_on_py3_checks $?
       - save_cache:
-          key: v1-dependency-cache-{{ checksum "requirements.txt" }}
+          key: v1-dependency-cache-py36-{{ checksum "requirements.txt" }}
           paths:
             - ~/.cache/pip
             - ~/.apt-cache
+      # NOTE: We use virtualenv files from Python 3.6 step in "deploy" job so we
+      # only persist paths from this job
       - persist_to_workspace:
           root: /
           paths:
@@ -38,9 +112,10 @@ jobs:
             - home/circleci/repo
             - home/circleci/.gitconfig
 
+
   deploy:
     docker:
-      - image: circleci/python:2.7
+      - image: circleci/python:3.6
 
     working_directory: ~/repo
 
@@ -50,24 +125,49 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: v1-dependency-cache-{{ checksum "requirements.txt" }}
+          key: v1-dependency-cache-py36-{{ checksum "requirements.txt" }}
       - attach_workspace:
           at: /
       - run:
           name: Install dependencies
-          command: sudo apt -y install gmic optipng
+          command: |
+            sudo apt-get update
+            sudo apt -y install gmic optipng
+            ~/ci/.circle/install_gh
       - run:
+          # NOTE: We try to retry the script up to 5 times if it fails. The command could fail due
+          # to the race (e.g. we try to push changes to index, but index has been updated by some
+          # other pack in the mean time)
           name: Update exchange.stackstorm.org
-          command:  ~/ci/.circle/deployment
+          command: ~/ci/.circle/retry_on_failure.sh ~/ci/.circle/deployment
 
 workflows:
   version: 2
-  build_test_deploy:
+  # Workflow which runs on each push
+  build_test_deploy_on_push:
     jobs:
-      - build_and_test
+      - integration_test_with_zabbix_32
+      - integration_test_with_zabbix_40
+      - build_and_test_python36
       - deploy:
           requires:
-            - build_and_test
+            - build_and_test_python36
+            - integration_test_with_zabbix_32
+            - integration_test_with_zabbix_40
           filters:
             branches:
               only: master
+  build_test_weekly:
+    jobs:
+      - build_and_test_python36
+    # Workflow which runs nightly - note we don't perform deploy job on nightly
+    # build
+    triggers:
+      # Run nightly build for the pack
+      - schedule:
+          # NOTE: We run it at 1 am UTC on every Saturday
+          cron: "0 1 * * 6"
+          filters:
+            branches:
+              only:
+                - master

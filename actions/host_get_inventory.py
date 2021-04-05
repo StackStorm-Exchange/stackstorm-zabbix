@@ -12,3 +12,24 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+from lib.actions import ZabbixBaseAction
+from pyzabbix.api import ZabbixAPIException
+
+
+class HostGetInventory(ZabbixBaseAction):
+
+    def run(self, host_ids=None):
+        """ Gets the inventory of one or more Zabbix Hosts.
+        """
+        self.connect()
+
+        # Find inventory by host ids
+        try:
+            inventory = self.client.host.get(
+                hostids=host_ids, selectInventory='extend', output=['hostid', 'inventory'])
+        except ZabbixAPIException as e:
+            raise ZabbixAPIException(("There was a problem searching for the host: "
+                                      "{0}".format(e)))
+
+        return inventory

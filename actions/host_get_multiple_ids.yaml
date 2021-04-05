@@ -2,11 +2,11 @@
 name: host_get_multiple_ids
 pack: zabbix
 runner_type: python-script
-description: Get the IDs of a multiple Zabbix Hosts if duplicates exist
+description: Get the IDs of multiple Zabbix Hosts
 enabled: true
 entry_point: host_get_multiple_ids.py
 parameters:
     host:
-        type: string
-        description: "Name of the Zabbix Host"
+        type: array
+        description: "Name of the Zabbix Hosts to retreive an ID for"
         required: True

@@ -1,0 +1,44 @@
+---
+name: update_host
+pack: zabbix
+runner_type: python-script
+description: A primitive action to update host information
+enabled: true
+entry_point: call_api.py
+parameters:
+  hostid:
+    type: string
+    description: ID of Host to be updated
+  description:
+    type: string
+    description: Description of the host.
+  groups:
+    type: array
+    description: Host groups to replace the current host groups the host belongs to.
+  host:
+    type: string
+    description: Technical name of the host.
+  interfaces:
+    type: array
+    description: Host interfaces to replace the current host interfaces.
+  inventory:
+    type: object
+    description: Host inventory properties.
+  macros:
+    type: array
+    description: User macros to replace the current user macros.
+  name:
+    type: string
+    description: Visible name of the host.
+  templates:
+    type: array
+    description: Templates to replace the currently linked templates.
+  token:
+    type: string
+    description: Encrypted access token to authenticate to ZabbixServer
+    default: |
+      {% if st2kv.user.zabbix.secret_token|string != '' %}{{ st2kv.user.zabbix.secret_token | decrypt_kv }}{% endif %}
+    secret: true
+  api_method:
+    default: host.update
+    immutable: true

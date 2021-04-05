@@ -7,7 +7,7 @@ This README explains how this integration works, and how to configure it.
 
 # Requirements
 
-* Zabbix >3.0. It has been tested with v3.0 and v3.2.
+* Zabbix >3.0. It has been tested with v3.0, v3.2 and v4.0.
 
 # Installation
 Install the pack:
@@ -39,9 +39,11 @@ Options:
 Example execution:
 
 ```shell
-$ source /opt/stackstorm/virtualenvs/zabbix/bin/activate
-$ /opt/stackstorm/packs/zabbix/tools/register_st2_config_to_zabbix.py -z http://zabbix-host/zabbix -u Admin -p zabbix
+$ /opt/stackstorm/virtualenvs/zabbix/bin/python /opt/stackstorm/packs/zabbix/tools/register_st2_config_to_zabbix.py -z http://zabbix-host/zabbix -u Admin -p zabbix
 ```
+
+NOTE: It's important you use ``python`` binary from the pack virtual environment (``/opt/stackstorm/virtualenvs/zabbix/bin/python``)
+and not the system one. If you use system Python binary you will see error similar to ``ImportError: No module named zabbix.api``.
 
 This will register a new MediaType (`StackStorm`) to dispatch events and add an associated action (`Dispatching to StackStorm`).
 
@@ -60,7 +62,7 @@ You can specify additional parameters and you can handle them from the payload o
 
 ### Deploy the AlertScript
 
-The script `st2_dispatcher.py` sends Zabbix events to the StackStorm server. Copy this script to the directory which Zabbix MediaType refers to. The directory is specified by the parameter of `AlertScriptsPath` in the Zabbix configuration file on the node which zabbix was installed.
+The script `st2_dispatch.py` sends Zabbix events to the StackStorm server. Copy this script to the directory which Zabbix MediaType refers to. The directory is specified by the parameter of `AlertScriptsPath` in the Zabbix configuration file on the node which zabbix was installed.
 ```shell
 $ grep 'AlertScriptsPath' /etc/zabbix/zabbix_server.conf
 ### Option: AlertScriptsPath
@@ -68,7 +70,7 @@ $ grep 'AlertScriptsPath' /etc/zabbix/zabbix_server.conf
 AlertScriptsPath=/usr/lib/zabbix/alertscripts
 ```
 
-This pack requires you to deploy this `st2_dispatcher.py` in its directory (and setup executional environment if necessary) on the Zabbix installed node. Set it up depending on your environment as below:
+This pack requires you to deploy this `st2_dispatch.py` in its directory (and setup executional environment if necessary) on the Zabbix installed node. Set it up depending on your environment as below:
 
 #### Case: single node
 
@@ -76,7 +78,7 @@ Both of StackStorm and Zabbix are installed on the same system:
 
 <img src="./images/description_alertscript1.png" width="350">
 
-This case is quite simple. All you have to do is copy `st2_dispatcher.py` to the directory which AlertScripts should be located.
+This case is quite simple. All you have to do is copy `st2_dispatch.py` to the directory which AlertScripts should be located.
 ```shell
 $ sudo cp /opt/stackstorm/packs/zabbix/tools/scripts/st2_dispatch.py /usr/lib/zabbix/alertscripts/
 ```
@@ -87,7 +89,7 @@ Zabbix and StackStorm are installed on separate systems, with IP connectivity be
 
 <img src="./images/description_alertscript2.png" width="350">
 
-In this case, you have to do two things (deploying and making executional environment) to set it up. First copy `st2_dispatcher.py` from the StackStorm server to the AlertScript directory on the Zabbix node.
+In this case, you have to do two things (deploying and making executional environment) to set it up. First copy `st2_dispatch.py` from the StackStorm server to the AlertScript directory on the Zabbix node.
 
 ```shell
 ubuntu@zabbix-node:~$ scp st2-node:/opt/stackstorm/packs/zabbix/tools/scripts/st2_dispatch.py ./
@@ -160,7 +162,8 @@ This trigger has these parameters:
 | alert_message | describe detail of alert (see following) |
 | extra_args    | describe optional user-defined values (default is `[]`) |
 
-In the `alert_message` parameter, the context is contained as JSON format (but the parameter value is string because of the functional restriction of Zabbix). You can parse it in an action to be passed these parameter.
+In the `alert_message` parameter, the value will be reflective of how it was structured in zabbix. 
+With the default configuration of 'Default message' by `register_st2_config_to_zabbix.py`
 
 | Parameter of `alert_message` | Description of context |
 |:-----------------------------|:-----------------------|
@@ -177,6 +180,8 @@ In the `alert_message` parameter, the context is contained as JSON format (but t
 
 (These configuration values are corresponding to [the Macros of Zabbix](https://www.zabbix.com/documentation/3.2/manual/appendix/macros/supported_by_location))
 
+You can also modify 'Default message' in the 'Operations' tab of your 'Action' to be structured as a JSON Array, JSON Dict, or a string, and the trigger will receive it that way.
+
 # StackStorm Configuration
 You need to set configure the Zabbix pack before running actions:
 
@@ -189,10 +194,121 @@ You need to set configure the Zabbix pack before running actions:
 # Action
 | Reference of the Action               | Description |
 |:--------------------------------------|:------------|
-| zabbix.ack_event                      | Send acknowledgement message for an event to Zabbix and may close it |
-| zabbix.host_get_id                    | Get the ID of a Zabbix Host |
-| zabbix.host_update_status             | Update the status of a Zabbix Host |
+| zabbix.ack_event                      | Send acknowledgement message for an event to Zabbix and if Zabbix may close it |
 | zabbix.host_delete                    | Delete a Zabbix Host |
+| zabbix.host_delete_by_id              | Delete a Zabbix Host by it's Id |
+| zabbix.host_get_id                    | Get the ID of a Zabbix Host |
+| zabbix.host_get_inventory             | Get the inventory of one or more Zabbix Hosts |
+| zabbix.host_get_multiple_ids          | Get the IDs of multiple Zabbix Hosts |
+| zabbix.host_get_status                | Get the status of a Zabbix Host |
+| zabbix.host_update_status             | Update the status of a Zabbix Host |
 | zabbix.maintenance_create_or_update   | Create or update Zabbix Maintenance Window |
 | zabbix.maintenance_delete             | Delete Zabbix Maintenance Window |
 | zabbix.test_credentials               | Tests if it credentials in the config are valid |
+
+# Running Test
+## Unit Test
+You can run unit tests by `st2-run-pack-tests` command that is provided by [StackStorm](https://github.com/StackStorm/st2) as below.
+
+```
+$ git clone git@github.com:StackStorm-Exchange/stackstorm-zabbix.git
+$ git clone git@github.com:StackStorm/st2.git
+$ st2/st2common/bin/st2-run-pack-tests -x -p ~/stackstorm-zabbix/
+```
+
+For more detail on this topic, please see the [official document page](https://docs.stackstorm.com/development/pack_testing.html).
+
+## Integration Test
+You can also run test with actual Zabbix server and Zabbix API server in your local environment using Zabbix Docker Images ([zabbix-server-mysql](https://hub.docker.com/r/zabbix/zabbix-server-mysql) and [zabbix-web-nginx-mysql](https://hub.docker.com/r/zabbix/zabbix-web-nginx-mysql)) and [Serverspec](https://serverspec.org/). This describes how to run the integration tests.
+
+### 0. Preparing for running RSpec tests
+For the first time in your environment to run this test, it's necessary to make an environment for RSpec as below.
+```
+$ cd stackstorm-zabbix
+$ gem install bundler
+$ bundle install
+```
+To make this environment by this procedure, you have to install Ruby (`v2.4` or later).
+
+### 1. Running Docker images for Zabbix
+You can run Zabbix services (Zabbix server and Zabbix Web API) for the integration test so quickly using Docker. To run these containers you should specify the environment variable of TAG which means Zabbix version of container to start.
+This command starts Docker containers of both Zabbix services which are `v3.2`.
+
+```
+$ TAG=ubuntu-3.2-latest docker-compose up -d
+```
+
+When you want to start Zabbix v4.0 containers, you can do it like this.
+
+```
+$ TAG=ubuntu-4.0-latest docker-compose up -d
+```
+
+All values you could specify in this variable is [here](https://hub.docker.com/r/zabbix/zabbix-server-mysql/tags).
+
+### 2. Running tests
+Starting procedure to run the test is also simple, all you have to do is executing rspec as below.
+
+```
+$ bundle exec rspec
+```
+
+# Advanced Usage
+If you would prefer to use an API Key for auth in place of user/pass, you can do so by passing a JSON Dict as the first positional argument in your `Media Type` in place of:
+```
+https://st2-node/api/v1
+https://st2-node/auth/v1
+st2user
+st2pass
+```
+### Valid Keys
+This dict has the following valid keys
+- `st2_userid`
+- `st2_passwd`
+- `api_url`
+- `auth_url`
+- `api_key`
+- `trigger`
+- `skip_config`
+- `config_file`
+
+`api_url` is always required
+`auth_url` is only required when using `st2_userid` and `st2_passwd`  
+`api_key` will cause `st2_userid` and `st2_passwd` to be ignored (API Key prefered)  
+`trigger` allows you to specify your own trigger on st2 to send messages to. Default is `zabbix.event_handler`
+
+### JSON Examples
+API Key for Auth - `{"api_url":"https://stackstorm.yourdomain.com/api/v1", "api_key":"aaabbbccc111222333"}`  
+User/Pass for auth - `{"api_url":"https://stackstorm.yourdomain.com/api/v1", "auth_url":"https://stackstorm.yourdomain.com/auth", "st2_userid":"st2admin", "st2_passwd":"st2pass"}`  
+API Key and send to custom trigger - `{"api_url":"https://stackstorm.yourdomain.com/api/v1", "api_key":"aaabbbccc111222333", "trigger": "pack.my_custom_trigger"}`  
+
+![](./images/apikey_example.png)
+
+# Zabbix Gotcha's
+
+#### Max 255 total parameter characters per Media Type
+(Zabbix 3.4) Zabbix has a default limitation of 255 characters that can be stored cumulatively for media type parameters. This is due to the default setting in the database column `exec_params` of `varchar(255)`. Modify this at your own risk.
+
+#### Media Type Parameter serialization
+(Zabbix 3.4) When you save the parameters for your media type, Zabbix serializes them into a single string, and stores them in the database under `exec_params`
+
+#### Media Type Parameter line endings
+(Zabbix 3.4) When parameters are serialized, they are delimited by a single newline (LF) character (\n). Specifically it is not CRLF (\r\n).  
+This means when your parameters are serialized, there is +n characters against the 255 limit, where n = number of parameters. (one \n per parameter)
+
+#### Media Type Parameter de-serialization
+(Zabbix 3.4) When Zabbix calls and executes a script for a Media Type, it takes the serialized string of parameters, and passes them to the script as individual strings with newline characters at the end.
+
+##### Literal representation
+```shell
+$./st2_dispatch.py 'first parameter' \
+'second parameter ' \
+'third parameter'
+```
+
+This is why you can't input `--flag value` as a parameters, because its passed literally as `'--flag value'\n`
+
+#### Relationship of Zabbix Functions
+Zabbix's dependencies for the various parts that go into doing something simple as "tell me when a device goes down" can be confusing, so here's a diagram.
+
+![](./images/zabbix_dependency_flow.png)

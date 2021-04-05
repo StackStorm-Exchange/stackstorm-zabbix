@@ -12,3 +12,24 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+from lib.actions import ZabbixBaseAction
+from pyzabbix.api import ZabbixAPIException
+
+
+class HostGetInterfaces(ZabbixBaseAction):
+
+    def run(self, host_ids=None):
+        """ Gets the interfaces of one or more Zabbix Hosts.
+        """
+        self.connect()
+
+        # Find interfaces by host ids
+        try:
+            interfaces = self.client.host.get(
+                hostids=host_ids, selectInterfaces='extend', output=['hostid', 'interfaces'])
+        except ZabbixAPIException as e:
+            raise ZabbixAPIException(("There was a problem searching for the host: "
+                                      "{0}".format(e)))
+
+        return interfaces

@@ -3,10 +3,10 @@ import re
 import sys
 import mock
 
-from io import BytesIO
+from six import StringIO
 from unittest import TestCase
 
-from urllib2 import URLError
+from six.moves.urllib.error import URLError
 from pyzabbix.api import ZabbixAPIException
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/../tools/')
@@ -16,8 +16,8 @@ import register_st2_config_to_zabbix
 class TestRegisterMediaType(TestCase):
     def setUp(self):
         sys.argv = ['register_st2_config_to_zabbix.py']
-        self.io_stdout = BytesIO()
-        self.io_stderr = BytesIO()
+        self.io_stdout = StringIO()
+        self.io_stderr = StringIO()
         sys.stdout = self.io_stdout
         sys.stderr = self.io_stderr
 
@@ -73,6 +73,7 @@ class TestRegisterMediaType(TestCase):
 
         # make mock to get target mediatype
         mock_obj = mock.Mock()
+        mock_obj.apiinfo.version.return_value = '3.x'
         mock_obj.mediatype.get.return_value = [{
             'type': register_st2_config_to_zabbix.SCRIPT_MEDIA_TYPE,
             'exec_path': register_st2_config_to_zabbix.ST2_DISPATCHER_SCRIPT,
@@ -121,6 +122,7 @@ class TestRegisterMediaType(TestCase):
             self.is_registered_action = True
 
         mock_obj = mock.Mock()
+        mock_obj.apiinfo.version.return_value = '3.x'
         mock_obj.mediatype.get.return_value = [
             {'type': register_st2_config_to_zabbix.SCRIPT_MEDIA_TYPE,
              'exec_path': 'other-script.sh'},
@@ -138,3 +140,26 @@ class TestRegisterMediaType(TestCase):
                                  self.io_stdout.getvalue()))
         self.assertTrue(self.is_registered_media)
         self.assertTrue(self.is_registered_action)
+
+    def test_register_mediatype_with_different_zabbix_version(self):
+        mock_client = mock.Mock()
+
+        def side_effect_addmedia(*args, **kwargs):
+            return 'user.addmedia is called'
+
+        def side_effect_userupdate(*args, **kwargs):
+            return 'user.update is called'
+
+        # set side_effect of caling user.update and user.addmedia API
+        mock_client.user.addmedia.side_effect = side_effect_addmedia
+        mock_client.user.update.side_effect = side_effect_userupdate
+
+        # When sending request that changes MediaType to Zabbix3.x, this calls user.addmedia API
+        mock_client.apiinfo.version.return_value = '3.x.y'
+        ret = register_st2_config_to_zabbix.register_media_to_admin(mock_client, 1, mock.Mock())
+        self.assertEqual(ret, 'user.addmedia is called')
+
+        # When sending request that changes MediaType to Zabbix3.x, this calls user.update API
+        mock_client.apiinfo.version.return_value = '4.x.y'
+        ret = register_st2_config_to_zabbix.register_media_to_admin(mock_client, 1, mock.Mock())
+        self.assertEqual(ret, 'user.update is called')

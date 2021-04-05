@@ -1,0 +1,35 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: zabbix
+      MYSQL_USER: zabbix
+      MYSQL_PASSWORD: zabbix
+      MYSQL_ROOT_PASSWORD: passwd
+
+  zabbix-server:
+    image: zabbix/zabbix-server-mysql:${TAG}
+    environment:
+      DB_SERVER_HOST: mysql
+      MYSQL_ROOT_PASSWORD: passwd
+    depends_on:
+      - mysql
+    volumes:
+      - ./tools/scripts/st2_dispatch.py:/usr/lib/zabbix/alertscripts/st2_dispatch.py
+    ports:
+      - "10051:10051"
+
+  zabbix-web:
+    image: zabbix/zabbix-web-nginx-mysql:${TAG}
+    restart: always
+    environment:
+      DB_SERVER_HOST: mysql
+      MYSQL_ROOT_PASSWORD: passwd
+    ports:
+      - 3033:80
+    depends_on:
+      - mysql
+      - zabbix-server

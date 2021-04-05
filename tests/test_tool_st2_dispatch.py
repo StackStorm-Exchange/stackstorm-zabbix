@@ -44,6 +44,8 @@ class TestZabbixDispatcher(TestCase):
         self.parser.add_option('--passwd', dest='st2_passwd')
         self.parser.add_option('--api-url', dest='api_url')
         self.parser.add_option('--auth-url', dest='auth_url')
+        self.parser.add_option('--api_key', dest='api_key')
+        self.parser.add_option('--trigger', dest='trigger', default="zabbix.event_handler")
         self.parser.add_option('--alert-sendto', dest="alert_sendto", default="")
         self.parser.add_option('--alert-subject', dest="alert_subject", default="")
         self.parser.add_option('--alert-message', dest="alert_message", default="")
