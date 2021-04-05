@@ -1,4 +1,7 @@
 py-zabbix==1.1.3
-st2client
-pytz
+st2client==3.4.0
+pytz==2019.1
 tzlocal
+decorator==4.4.2
+configparser==4.0.2
+

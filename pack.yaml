@@ -5,8 +5,9 @@ description: Zabbix Monitoring System
 keywords:
   - zabbix
   - monitoring
-version: 1.0.0
+version: 0.4.1
 author: Hiroyasu OHYAMA
 email: user.localhost2000@gmail.com
 python_versions:
+  - "2"
   - "3"
