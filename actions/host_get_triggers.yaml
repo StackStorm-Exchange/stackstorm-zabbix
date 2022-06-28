@@ -1,0 +1,25 @@
+---
+name: host_get_triggers
+pack: zabbix
+runner_type: python-script
+description: List all triggers for a given host in Zabbix
+enabled: true
+entry_point: call_api.py
+parameters:
+  expandDescription:
+    type: string
+    description: "test flag"
+    default: ""
+    immutable: true
+  filter:
+    type: object
+    description: Condition to filter the result
+  token:
+    type: string
+    description: Encrypted access token to authenticate to ZabbixServer
+    default: |
+      {% if st2kv.user.zabbix.secret_token|string != '' %}{{ st2kv.user.zabbix.secret_token | decrypt_kv }}{% endif %}
+    secret: true
+  api_method:
+    default: trigger.get
+    immutable: true
