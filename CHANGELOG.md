@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.1.0
+
+### Added
+- `actions/host_get_alerts` - Gets alerts for a given Zabbix host
+- `actions/host_get_events` - Gets events for a given Zabbix host
+- `actions/host_get_triggers` - Gets triggers for a given Zabbix host
+
 ## 1.0.0
 
 - Drop python 2.7 support.
