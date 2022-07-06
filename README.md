@@ -197,10 +197,13 @@ You need to set configure the Zabbix pack before running actions:
 | zabbix.ack_event                      | Send acknowledgement message for an event to Zabbix and if Zabbix may close it |
 | zabbix.host_delete                    | Delete a Zabbix Host |
 | zabbix.host_delete_by_id              | Delete a Zabbix Host by it's Id |
+| zabbix.host_get_alerts                | Get events for a given Zabbix host |
+| zabbix.host_get_events                | Get events for a given Zabbix host |
 | zabbix.host_get_id                    | Get the ID of a Zabbix Host |
 | zabbix.host_get_inventory             | Get the inventory of one or more Zabbix Hosts |
 | zabbix.host_get_multiple_ids          | Get the IDs of multiple Zabbix Hosts |
 | zabbix.host_get_status                | Get the status of a Zabbix Host |
+| zabbix.host_get_triggers              | Get triggers for a given Zabbix host |
 | zabbix.host_update_status             | Update the status of a Zabbix Host |
 | zabbix.maintenance_create_or_update   | Create or update Zabbix Maintenance Window |
 | zabbix.maintenance_delete             | Delete Zabbix Maintenance Window |
