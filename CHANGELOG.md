@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.2.0
+### Added
+- `actions/workflows/host_get_active_triggers` - Gets active triggers for a given Zabbix host
+
 ## 1.1.0
 
 ### Added
