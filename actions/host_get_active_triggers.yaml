@@ -1,0 +1,12 @@
+---
+description: "List all active triggers for a given host"
+enabled: true
+runner_type: orquesta
+entry_point: workflows/host_get_active_triggers.yaml
+name: host_get_active_triggers
+pack: zabbix
+parameters:
+  host:
+        type: string
+        description: "Name of the Zabbix Host"
+        required: True

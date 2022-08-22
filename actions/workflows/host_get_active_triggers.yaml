@@ -1,0 +1,51 @@
+---
+version: 1.0
+
+description: List all active triggers for a given host
+
+input:
+  - host
+
+vars:
+  - error: ""
+  - triggers: []
+  - host_id: ""
+
+
+output:
+  - triggers: "{{ ctx().triggers }}"
+
+tasks:
+  get_zabbix_id:
+    action: zabbix.host_get_id
+    input:
+      host: "{{ ctx().host }}"
+    next:
+      - when: "{{ succeeded() }}"
+        publish:
+          - host_id: "{{ result().result }}"
+        do:
+          - get_triggers
+      - when: "{{ failed() }}"
+        publish:
+          - error: "{{ result().stderr }}"
+        do:
+          - fail
+
+  get_triggers:
+    action: zabbix.host_get_triggers
+    input:
+      filter:
+        hostid: "{{ ctx().host_id }}"
+        value: 1
+    next:
+      - when: "{{ succeeded() }}"
+        publish:
+          - triggers: "{{ result().result }}"
+        do:
+          - noop
+      - when: "{{ failed() }}"
+        publish:
+          - error: "{{ result().stderr }}"
+        do:
+          - fail
