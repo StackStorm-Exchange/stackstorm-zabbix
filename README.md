@@ -204,6 +204,7 @@ You need to set configure the Zabbix pack before running actions:
 | zabbix.host_get_multiple_ids          | Get the IDs of multiple Zabbix Hosts |
 | zabbix.host_get_status                | Get the status of a Zabbix Host |
 | zabbix.host_get_triggers              | Get triggers for a given Zabbix host |
+| zabbix.host_get_active_triggers       | Get active triggers for a given Zabbix host |
 | zabbix.host_update_status             | Update the status of a Zabbix Host |
 | zabbix.maintenance_create_or_update   | Create or update Zabbix Maintenance Window |
 | zabbix.maintenance_delete             | Delete Zabbix Maintenance Window |
