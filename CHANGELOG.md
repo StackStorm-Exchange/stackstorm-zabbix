@@ -2,7 +2,7 @@
 
 ## 1.2.1
 ### Additions
-- `actions/workflows/host_get_active_triggers` - Added paramter, 'priority', which allows active triggers to be filtered by severity (priority) level
+- `actions/workflows/host_get_active_triggers` - Added parameter, 'priority', which allows active triggers to be filtered by severity (priority) level
 
 ## 1.2.0
 ### Added
