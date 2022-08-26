@@ -5,6 +5,7 @@ description: List all active triggers for a given host
 
 input:
   - host
+  - priority
 
 vars:
   - error: ""
@@ -38,6 +39,7 @@ tasks:
       filter:
         hostid: "{{ ctx().host_id }}"
         value: 1
+        priority: "{{ ctx().priority }}"
     next:
       - when: "{{ succeeded() }}"
         publish:

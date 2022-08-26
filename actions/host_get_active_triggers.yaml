@@ -10,3 +10,8 @@ parameters:
         type: string
         description: "Name of the Zabbix Host"
         required: True
+  priority:
+        type: array
+        description: "List of priority numbers (severity) to get triggers for"
+        required: False
+        default: []
