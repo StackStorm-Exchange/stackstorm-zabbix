@@ -199,6 +199,7 @@ You need to set configure the Zabbix pack before running actions:
 | zabbix.host_delete_by_id              | Delete a Zabbix Host by it's Id |
 | zabbix.host_get_alerts                | Get events for a given Zabbix host |
 | zabbix.host_get_events                | Get events for a given Zabbix host |
+| zabbix.host_get_hostgroups            | Get/Check the hostgroups of a Zabbix Host |
 | zabbix.host_get_id                    | Get the ID of a Zabbix Host |
 | zabbix.host_get_inventory             | Get the inventory of one or more Zabbix Hosts |
 | zabbix.host_get_multiple_ids          | Get the IDs of multiple Zabbix Hosts |

@@ -1,7 +1,11 @@
 # Change Log
 
+## 1.2.2
+### Added
+- `actions/host_get_hostgroups` - Gets/Checks the hostgroups that a given Zabbix host is in
+
 ## 1.2.1
-### Additions
+### Added
 - `actions/workflows/host_get_active_triggers` - Added parameter, 'priority', which allows active triggers to be filtered by severity (priority) level
 
 ## 1.2.0
