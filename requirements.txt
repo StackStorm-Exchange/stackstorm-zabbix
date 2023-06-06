@@ -1,4 +1,4 @@
-py-zabbix==1.1.3
+git+https://github.com/EncoreTechnologies/py-zabbix@update/zabbix-api-params-changed-in-v6
 st2client
 pytz
 tzlocal
