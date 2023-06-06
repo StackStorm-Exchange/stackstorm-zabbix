@@ -1,4 +1,4 @@
-git+https://github.com/EncoreTechnologies/py-zabbix@update/zabbix-api-params-changed-in-v6
+git+https://github.com/EncoreTechnologies/py-zabbix
 st2client
 pytz
 tzlocal
