@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.2.3
+### Updated
+- Updated py-zabbix module because the Zabbix API recently changed their login parameters
+
 ## 1.2.2
 ### Added
 - `actions/host_get_hostgroups` - Gets/Checks the hostgroups that a given Zabbix host is in
