@@ -6,7 +6,7 @@ keywords:
   - zabbix
   - monitoring
 version: 1.0.0
-author: Ian Price
-email: ianmprice@gmail.com
+author: Hiroyasu OHYAMA
+email: user.localhost2000@gmail.com
 python_versions:
   - "3"

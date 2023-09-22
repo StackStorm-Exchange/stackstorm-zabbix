@@ -8,7 +8,7 @@
 
 # This is base configuration. These owners could review the
 # whole file in this repository.
-* @userlocalhost @namachieli @StackStorm-Exchange/encoretechnologies @StackStorm-Exchange/tsc
+* @namachieli @StackStorm-Exchange/encoretechnologies @StackStorm-Exchange/tsc
 
 # CI configuration files should be reviewed by specific owners
 # who are more responsible for ensuring the quality of this pack
