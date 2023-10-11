@@ -17,7 +17,7 @@ class CreateHost(ZabbixBaseAction):
         return [self.get_interface_config(domain=x, is_main=(x == main_if)) for x in domains]
 
     def get_interface_config_with_ipaddr(self, ipaddrs, main_if):
-        return [self.get_interface_config(ipaddr=x, is_main=(x == main_if)) for x in ipaddrs]
+        return [self.get_interface_config(ipaddrs)
 
     def set_proxy_for_host(self, proxy_name, new_hosts):
         for proxy in self.client.proxy.get(filter={'host': proxy_name}):
@@ -28,7 +28,7 @@ class CreateHost(ZabbixBaseAction):
                 'hosts': current_hosts + new_hosts,
             })
 
-    def run(self, name, groups, ipaddrs=[], domains=[], proxy_host=None, token=None, main_if=''):
+    def run(self, name, groups, ipaddrs, domains=[], proxy_host=None, token=None, main_if=''):
         # Initialize client object to connect Zabbix server
         if token:
             self.client = ZabbixAPI(url=self.config['zabbix']['url'])
