@@ -17,7 +17,7 @@ class CreateHost(ZabbixBaseAction):
         return [self.get_interface_config(domain=x, is_main=(x == main_if)) for x in domains]
 
     def get_interface_config_with_ipaddr(self, ipaddrs, main_if):
-        return [self.get_interface_config(ipaddrs)
+        return [self.get_interface_config(ipaddrs)]
 
     def set_proxy_for_host(self, proxy_name, new_hosts):
         for proxy in self.client.proxy.get(filter={'host': proxy_name}):
