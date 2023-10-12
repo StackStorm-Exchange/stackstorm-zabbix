@@ -15,9 +15,8 @@ parameters:
         description: HostGroups to be registered to creating host
         required: True
     ipaddrs:
-        type: array
+        type: string
         description: IP addresses of the host in which ZabbixAgent is installed
-        default: []
     domains:
         type: array
         description: Domain names of the host in which ZabbixAgent is installed

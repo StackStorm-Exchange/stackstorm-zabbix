@@ -1,4 +1,10 @@
 # Change Log
+## 1.0.2
+
+- change create_host.py host as a string
+## 1.0.1
+
+- change create_host.yaml host as a string
 
 ## 1.0.0
 
