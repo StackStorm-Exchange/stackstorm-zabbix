@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.1.0
+
+- Add webhook media_type for Zabbix 6.0 or higher
+
 ## 1.0.0
 
 - Drop python 2.7 support.

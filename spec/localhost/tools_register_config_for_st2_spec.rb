@@ -5,6 +5,7 @@ ZABBIX_USER = ENV['ZABBIX_USER'] || 'admin'
 ZABBIX_SENDTO = ENV['ZABBIX_SENDTO'] || 'admin'
 ZABBIX_PASSWORD = ENV['ZABBIX_PASSWORD'] || 'zabbix'
 ZABBIX_API_ENDPOINT = ENV['ZABBIX_API'] || 'http://localhost/'
+ZABBIX_DISPATCHER_MEDIA_TYPE = ENV['ZABBIX_DISPATCHER_MEDIA_TYPE'] || 'script'
 
 describe 'Tests for registering Zabbix for StackStorm' do
   before(:all) do
@@ -18,7 +19,8 @@ describe 'Tests for registering Zabbix for StackStorm' do
                    "-u #{ ZABBIX_USER } " \
                    "-s #{ ZABBIX_SENDTO } " \
                    "-p #{ ZABBIX_PASSWORD } " \
-                   "-z #{ ZABBIX_API_ENDPOINT }") do
+                   "-z #{ ZABBIX_API_ENDPOINT } " \
+                   "-t #{ ZABBIX_DISPATCHER_MEDIA_TYPE }") do
     its(:exit_status) { should eq 0 }
     its(:stdout) do 
       should match /^Success to register the configurations for StackStorm to the Zabbix Server./
@@ -38,7 +40,7 @@ describe 'Tests for registering Zabbix for StackStorm' do
   # This method wait to start and initialize Zabbix-server and Zabbix-Web
   def try_to_login(retry_count = 0)
     begin
-      return @client.login('admin', 'zabbix')
+      return @client.login(ZABBIX_USER, ZABBIX_PASSWORD)
     rescue => e
       if retry_count < 60
         # make a delay before retrying

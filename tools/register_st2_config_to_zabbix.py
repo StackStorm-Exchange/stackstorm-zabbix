@@ -6,6 +6,7 @@ from optparse import OptionParser
 from zabbix.api import ZabbixAPI
 from pyzabbix.api import ZabbixAPIException
 from six.moves.urllib.error import URLError
+import yaml
 
 # This constant describes 'script' value of 'type' property in the MediaType,
 # which is specified in the Zabbix API specification.
@@ -27,6 +28,9 @@ def get_options():
                       help="Password which is associated with the username")
     parser.add_option('-s', '--sendto', dest="z_sendto", default='Admin',
                       help="Address, user name or other identifier of the recipient")
+    parser.add_option('-t', '--type', dest="z_dispatchertype",
+                      default='script', choices=['script', 'webhook'],
+                      help="Select type of way to dispatch")
 
     (options, args) = parser.parse_args()
 
@@ -58,73 +62,127 @@ def register_media_type(client, options, mediatype_id=None):
     """
     This method registers a MediaType which dispatches alert to the StackStorm.
     """
-    mediatype_args = [
-        '-- CHANGE ME : api_url  (e.g. https://st2-node/api/v1)',
-        '-- CHANGE ME : auth_url (e.g. https://st2-node/auth/v1)',
-        '-- CHANGE ME : login uername of StackStorm --',
-        '-- CHANGE ME : login password of StackStorm --',
-        '{ALERT.SENDTO}',
-        '{ALERT.SUBJECT}',
-        '{ALERT.MESSAGE}',
-    ]
+    if (options.z_dispatchertype == 'script'):
+        mediatype_args = [
+            '-- CHANGE ME : api_url  (e.g. https://st2-node/api/v1)',
+            '-- CHANGE ME : auth_url (e.g. https://st2-node/auth/v1)',
+            '-- CHANGE ME : login uername of StackStorm --',
+            '-- CHANGE ME : login password of StackStorm --',
+            '{ALERT.SENDTO}',
+            '{ALERT.SUBJECT}',
+            '{ALERT.MESSAGE}',
+        ]
 
-    # send request to register a new MediaType for StackStorm
-    params = {
-        'description': 'StackStorm',
-        'type': SCRIPT_MEDIA_TYPE,
-        'exec_path': ST2_DISPATCHER_SCRIPT,
-        'exec_params': "\n".join(mediatype_args) + "\n",
-    }
-    if mediatype_id:
-        params['mediatypeid'] = mediatype_id
+        # send request to register a new MediaType for StackStorm
+        params = {
+            'description': 'StackStorm',
+            'type': SCRIPT_MEDIA_TYPE,
+            'exec_path': ST2_DISPATCHER_SCRIPT,
+            'exec_params': "\n".join(mediatype_args) + "\n",
+        }
+        if mediatype_id:
+            params['mediatypeid'] = mediatype_id
 
-        ret = client.mediatype.update(**params)
+            ret = client.mediatype.update(**params)
+        else:
+            ret = client.mediatype.create(**params)
+
+        return_value = ret['mediatypeids'][0]
     else:
-        ret = client.mediatype.create(**params)
+        with open('media_stackstorm.yml') as file:
+            media_stackstorm = yaml.safe_load(file)
+        params = {
+            'format': 'yaml',
+            'source': yaml.dump(media_stackstorm),
+            'rules': {
+                'mediaTypes': {
+                    'createMissing': True,
+                    'updateExisting': True
+                }
+            }
+        }
 
-    return ret['mediatypeids'][0]
+        ret = client.do_request('configuration.import', params)
+
+        if (not ret['result']):
+            sys.exit('Failed to import StackStorm media_type')
+
+        params = {
+            'output': 'yaml',
+            'filter': {
+                'name': media_stackstorm['zabbix_export']['media_types'][0]['name']
+            }
+        }
+
+        ret = client.mediatype.get(**params)
+        return_value = ret[0]['mediatypeid']
+
+    return return_value
 
 
 def register_action(client, mediatype_id, options, action_id=None):
+    ret = None
 
     if action_id:
         client.action.delete(action_id)
 
-    return client.action.create(**{
-        'name': ST2_ACTION_NAME,
-        'esc_period': 360,
-        'eventsource': 0,  # means event created by a trigger
-        'def_shortdata': '{TRIGGER.STATUS}: {TRIGGER.NAME}',
-        'def_longdata': json.dumps({
-            'event': {
-                'id': '{EVENT.ID}',
-                'time': '{EVENT.TIME}',
-            },
-            'trigger': {
-                'id': '{TRIGGER.ID}',
-                'name': '{TRIGGER.NAME}',
-                'status': '{TRIGGER.STATUS}',
-            },
-            'items': [{
-                'name': '{ITEM.NAME%s}' % index,
-                'host': '{HOST.NAME%s}' % index,
-                'key': '{ITEM.KEY%s}' % index,
-                'value': '{ITEM.VALUE%s}' % index
-            } for index in range(1, 9)],
-        }),
-        'operations': [{
-            "operationtype": 0,
-            "esc_period": 0,
-            "esc_step_from": 1,
-            "esc_step_to": 1,
-            "evaltype": 0,
-            "opmessage_usr": [{"userid": "1"}],
-            "opmessage": {
-                "default_msg": 1,
-                "mediatypeid": mediatype_id,
-            }
-        }]
-    })
+    major_version = int(client.apiinfo.version()[0])
+    if (major_version <= 4):
+        ret = client.action.create(**{
+            'name': ST2_ACTION_NAME,
+            'esc_period': 360,
+            'eventsource': 0,  # means event created by a trigger
+            'def_shortdata': '{TRIGGER.STATUS}: {TRIGGER.NAME}',
+            'def_longdata': json.dumps({
+                'event': {
+                    'id': '{EVENT.ID}',
+                    'time': '{EVENT.TIME}',
+                },
+                'trigger': {
+                    'id': '{TRIGGER.ID}',
+                    'name': '{TRIGGER.NAME}',
+                    'status': '{TRIGGER.STATUS}',
+                },
+                'items': [{
+                    'name': '{ITEM.NAME%s}' % index,
+                    'host': '{HOST.NAME%s}' % index,
+                    'key': '{ITEM.KEY%s}' % index,
+                    'value': '{ITEM.VALUE%s}' % index
+                } for index in range(1, 9)],
+            }),
+            'operations': [{
+                "operationtype": 0,
+                "esc_period": 0,
+                "esc_step_from": 1,
+                "esc_step_to": 1,
+                "evaltype": 0,
+                "opmessage_usr": [{"userid": "1"}],
+                "opmessage": {
+                    "default_msg": 1,
+                    "mediatypeid": mediatype_id,
+                }
+            }]
+        })
+
+    if (5 <= major_version):
+        ret = client.action.create(**{
+            'name': ST2_ACTION_NAME,
+            'esc_period': 360,
+            'eventsource': 0,  # means event created by a trigger
+            'operations': [{
+                "operationtype": 0,
+                "esc_period": 0,
+                "esc_step_from": 1,
+                "esc_step_to": 1,
+                "evaltype": 0,
+                "opmessage_usr": [{"userid": "1"}],
+                "opmessage": {
+                    "default_msg": 1,
+                    "mediatypeid": mediatype_id,
+                }
+            }]
+        })
+    return ret
 
 
 def register_media_to_admin(client, mediatype_id, options):
