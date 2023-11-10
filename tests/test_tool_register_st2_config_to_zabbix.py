@@ -163,3 +163,8 @@ class TestRegisterMediaType(TestCase):
         mock_client.apiinfo.version.return_value = '4.x.y'
         ret = register_st2_config_to_zabbix.register_media_to_admin(mock_client, 1, mock.Mock())
         self.assertEqual(ret, 'user.update is called')
+
+        # When sending request that changes MediaType to Zabbix6.x, this calls user.update API
+        mock_client.apiinfo.version.return_value = '6.x.y'
+        ret = register_st2_config_to_zabbix.register_media_to_admin(mock_client, 1, mock.Mock())
+        self.assertEqual(ret, 'user.update is called')

@@ -6,8 +6,14 @@ This README explains how this integration works, and how to configure it.
 ![Internal construction of this pack](./images/internal_construction.png)
 
 # Requirements
+## st2 pack
+* Zabbix >=3.0. It has been tested with v3.0, v3.2 and v4.0.
 
-* Zabbix >3.0. It has been tested with v3.0, v3.2 and v4.0.
+## script type distpacher
+* Zabbix >=3.0. It has been tested with v3.0, v3.2 and v4.0.
+
+## webhook type dispatcher
+* Zabbix >=6.0. It has been tested with v6.0.
 
 # Installation
 Install the pack:
@@ -34,6 +40,13 @@ Options:
   -s Z_SENDTO, --sendto=Z_SENDTO
                         Address, user name or other identifier of the
                         recipient
+  -s Z_DISPATCHERTYPE, --type=Z_DISPATCHERTYPE
+                        Type of way to dispatch. If you select script,
+                        the Zabbix will use st2_dispatcher. On the
+                        other hand, if you select webhook, this command
+                        will import a webhook dispathcer mediatype which
+                        is defined in media_stackstorm.yml
+
 ```
 
 Example execution:
@@ -58,9 +71,12 @@ After executing the `register_st2_config_to_zabbix.py` command, you can notice t
 You see following page, and you have to fill out with parameters for your st2 environment (the endpoint URLs of st2-api and st2-auth, and authentication information).
 ![](./images/configuration_for_mediatype2.png)
 
+If you setup webhook dispatcher, you see following page.
+![](./images/configuration_for_mediatype3.png)
+
 You can specify additional parameters and you can handle them from the payload of the StackStorm's Trigger(`zabbix.event_handler`).
 
-### Deploy the AlertScript
+### Deploy the AlertScript for script dispatcher
 
 The script `st2_dispatch.py` sends Zabbix events to the StackStorm server. Copy this script to the directory which Zabbix MediaType refers to. The directory is specified by the parameter of `AlertScriptsPath` in the Zabbix configuration file on the node which zabbix was installed.
 ```shell
@@ -253,6 +269,12 @@ Starting procedure to run the test is also simple, all you have to do is executi
 $ bundle exec rspec
 ```
 
+When you want to run test for webhook type, you have to execute following command.
+
+```
+$ ZABBIX_DISPATCHER_MEDIA_TYPE=webhook bundle exec rspec
+```
+
 # Advanced Usage
 If you would prefer to use an API Key for auth in place of user/pass, you can do so by passing a JSON Dict as the first positional argument in your `Media Type` in place of:
 ```
@@ -276,6 +298,8 @@ This dict has the following valid keys
 `auth_url` is only required when using `st2_userid` and `st2_passwd`  
 `api_key` will cause `st2_userid` and `st2_passwd` to be ignored (API Key prefered)  
 `trigger` allows you to specify your own trigger on st2 to send messages to. Default is `zabbix.event_handler`
+
+> WARNING: webhook type dispatcher does NOT support user/pass auth, please use API Key.
 
 ### JSON Examples
 API Key for Auth - `{"api_url":"https://stackstorm.yourdomain.com/api/v1", "api_key":"aaabbbccc111222333"}`  

@@ -20,9 +20,12 @@ executors:
       tag:
         type: string
         default: latest
+      mysql_tag:
+        type: string
+        default: '5.7'
     docker:
       - image: circleci/ruby:2.7.2-buster
-      - image: mysql:5.7
+      - image: mysql:<< parameters.mysql_tag >>
         environment:
           MYSQL_DATABASE: zabbix
           MYSQL_USER: zabbix
@@ -60,6 +63,19 @@ jobs:
     steps:
       - integration_test_with_zabbix
 
+  integration_test_with_zabbix_60:
+    executor:
+      name: zabbix
+      mysql_tag: '8.0'
+      tag: ubuntu-6.0-latest
+    working_directory: ~/repo
+    environment:
+      ZABBIX_API: http://localhost:8080/
+      ZABBIX_USER: Admin
+      ZABBIX_DISPATCHER_MEDIA_TYPE: webhook
+    steps:
+      - integration_test_with_zabbix
+
   circleci_is_disabled_job:
     docker:
       - image: cimg/base:stable
@@ -74,6 +90,7 @@ workflows:
     jobs:
       - integration_test_with_zabbix_32
       - integration_test_with_zabbix_40
+      - integration_test_with_zabbix_60
   circleci_is_disabled:
     jobs:
       - circleci_is_disabled_job

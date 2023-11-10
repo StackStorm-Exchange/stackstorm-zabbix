@@ -1,0 +1,236 @@
+zabbix_export:
+  version: '6.0'
+  media_types:
+    -
+      name: StackStorm
+      type: WEBHOOK
+      description: StackStorm
+      parameters:
+        -
+          name: alert_message
+          value: '{ALERT.MESSAGE}'
+        -
+          name: alert_subject
+          value: '{ALERT.SUBJECT}'
+        -
+          name: alert_sendto
+          value: '{ALERT.SENDTO}'
+        -
+          name: event_source
+          value: '{EVENT.SOURCE}'
+        -
+          name: st2_api_url
+          value: '<PLACE ST2 API URL>'
+        -
+          name: st2_api_key
+          value: '<PLACE ST2 API Key>'
+        -
+          name: st2_trigger
+          value: zabbix.event_handler
+      script: |
+        var St2 = {
+            params: {},
+
+            setParams: function (params) {
+                if (typeof params !== 'object') {
+                    return;
+                }
+                St2.params = params;
+            },
+
+            setProxy: function (HTTPProxy) {
+                St2.HTTPProxy = HTTPProxy;
+            },
+
+            urlCheckFormat: function (api_url) {
+                if (typeof api_url === 'string' && !api_url.endsWith('/')) {
+                    api_url += '/';
+                }
+
+                if (api_url.indexOf('http://') === -1 && api_url.indexOf('https://') === -1) {
+                    api_url = 'https://' + api_url;
+                }
+
+                return api_url;
+            },
+
+            request: function (api_url, data) {
+                if (typeof St2.params !== 'object' || typeof St2.params['api_key'] === 'undefined' || St2.params['api_key'] === '') {
+                    throw 'Required St2 param is not set: "api_key".';
+                }
+
+                var response,
+                    request = new HttpRequest();
+
+                request.addHeader('Content-Type: application/json');
+                request.addHeader('St2-Api-Key: ' + St2.params.api_key);
+
+                const webhook_url = api_url + 'webhooks/st2';
+
+                if (typeof St2.HTTPProxy !== 'undefined' && St2.HTTPProxy !== '') {
+                    request.setProxy(St2.HTTPProxy);
+                }
+
+                if (typeof data !== 'undefined') {
+                    data = JSON.stringify(data);
+                }
+
+                Zabbix.log(4, '[ StackStorm Webhook ] Sending request: ' + webhook_url + ((typeof data === 'string')
+                    ? ('\n' + data)
+                    : ''));
+
+                response = request.post(webhook_url, data);
+
+                Zabbix.log(4, '[ StackStorm Webhook ] Received response with status code ' +
+                    request.getStatus() + '\n' + response);
+
+                if (response !== null) {
+                    try {
+                        response = JSON.parse(response);
+                    }
+                    catch (error) {
+                        Zabbix.log(4, '[ StackStorm Webhook ] Failed to parse response received from StackStorm');
+                        response = null;
+                    }
+                }
+
+                if (typeof response !== 'object') {
+                    throw 'Failed to process response received from StackStorm. Check debug log for more information.';
+                }
+
+                if (request.getStatus() < 200 || request.getStatus() >= 300) {
+                    var message = 'Request failed with status code ' + request.getStatus();
+
+                    if (response.message) {
+                        message += ': ' + response.message;
+                    }
+
+                    throw message + ' Check debug log for more information.';
+                }
+
+                return response;
+            }
+        };
+
+        try {
+            var params = JSON.parse(value),
+                st2 = {},
+                data = {},
+                result
+                required_params = [
+                    'alert_subject', 'alert_message',
+                    'st2_api_url', 'st2_api_key', 'st2_trigger'
+                ];
+
+            Object.keys(params)
+                .forEach(function (key) {
+                    if (key.startsWith('st2_')) {
+                        st2[key.substring(4)] = params[key];
+                    }
+                    else if (required_params.indexOf(key) !== -1 && params[key] === '') {
+                        throw 'Parameter "' + key + '" can\'t be empty.';
+                    }
+                });
+
+            // Check type of event. Possible values: 0 - Trigger
+            if (params.event_source != 0) {
+                throw ('Incorrect "event_source" parameter given: ' + params.event_source
+                    + '\nOnly trigger-based events are supported');
+            }
+
+            // Check for backslash in the end of url and schema.
+            st2.api_url = St2.urlCheckFormat(st2.api_url);
+
+
+            data.trigger = st2.trigger;
+            data.payload = {
+                alert_sendto: params.alert_sendto,
+                alert_subject: params.alert_subject,
+                alert_message: params.alert_message
+            }
+
+            St2.setParams(st2);
+            St2.setProxy(params.HTTPProxy);
+
+            var response = St2.request(st2.api_url, data);
+
+            Zabbix.log(4, '[ StackStorm Webhook ] Response: ' + JSON.stringify(response));
+            return JSON.stringify(response);
+        }
+        catch (error) {
+            Zabbix.log(4, '[ StackStorm Webhook ] ERROR: ' + error);
+            throw 'Sending failed: ' + error;
+        }
+      message_templates:
+        -
+          event_source: TRIGGERS
+          operation_mode: PROBLEM
+          subject: '[{TRIGGER.STATUS}] {TRIGGER.NAME}'
+          message: |
+            {
+                "event": {
+                    "id": "{EVENT.ID}",
+                    "time": "{EVENT.TIME}"
+                },
+                "trigger": {
+                    "id": "{TRIGGER.ID}",
+                    "name": "{TRIGGER.NAME}",
+                    "status": "{TRIGGER.STATUS}"
+                },
+                "items": [
+                    {
+                        "name": "{ITEM.NAME1}",
+                        "host": "{HOST.NAME1}",
+                        "key": "{ITEM.KEY1}",
+                        "value": "{ITEM.VALUE1}"
+                    },
+                    {
+                        "name": "{ITEM.NAME2}",
+                        "host": "{HOST.NAME2}",
+                        "key": "{ITEM.KEY2}",
+                        "value": "{ITEM.VALUE2}"
+                    },
+                    {
+                        "name": "{ITEM.NAME3}",
+                        "host": "{HOST.NAME3}",
+                        "key": "{ITEM.KEY3}",
+                        "value": "{ITEM.VALUE3}"
+                    },
+                    {
+                        "name": "{ITEM.NAME4}",
+                        "host": "{HOST.NAME4}",
+                        "key": "{ITEM.KEY4}",
+                        "value": "{ITEM.VALUE4}"
+                    },
+                    {
+                        "name": "{ITEM.NAME5}",
+                        "host": "{HOST.NAME5}",
+                        "key": "{ITEM.KEY5}",
+                        "value": "{ITEM.VALUE5}"
+                    },
+                    {
+                        "name": "{ITEM.NAME6}",
+                        "host": "{HOST.NAME6}",
+                        "key": "{ITEM.KEY6}",
+                        "value": "{ITEM.VALUE6}"
+                    },
+                    {
+                        "name": "{ITEM.NAME7}",
+                        "host": "{HOST.NAME7}",
+                        "key": "{ITEM.KEY7}",
+                        "value": "{ITEM.VALUE7}"
+                    },
+                    {
+                        "name": "{ITEM.NAME8}",
+                        "host": "{HOST.NAME8}",
+                        "key": "{ITEM.KEY8}",
+                        "value": "{ITEM.VALUE8}"
+                    },
+                    {
+                        "name": "{ITEM.NAME9}",
+                        "host": "{HOST.NAME9}",
+                        "key": "{ITEM.KEY9}",
+                        "value": "{ITEM.VALUE9}"
+                    }
+                ]
+            }
