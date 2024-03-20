@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.0.1
+
+- Added new required field "name" to create the MediaType and removed deprecated fields (def_shortdata and def_longdata).
+
 ## 1.0.0
 
 - Drop python 2.7 support.
