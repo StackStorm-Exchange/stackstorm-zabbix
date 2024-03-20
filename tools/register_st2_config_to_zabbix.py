@@ -70,6 +70,7 @@ def register_media_type(client, options, mediatype_id=None):
 
     # send request to register a new MediaType for StackStorm
     params = {
+        'name': 'StackStorm',
         'description': 'StackStorm',
         'type': SCRIPT_MEDIA_TYPE,
         'exec_path': ST2_DISPATCHER_SCRIPT,
@@ -94,24 +95,6 @@ def register_action(client, mediatype_id, options, action_id=None):
         'name': ST2_ACTION_NAME,
         'esc_period': 360,
         'eventsource': 0,  # means event created by a trigger
-        'def_shortdata': '{TRIGGER.STATUS}: {TRIGGER.NAME}',
-        'def_longdata': json.dumps({
-            'event': {
-                'id': '{EVENT.ID}',
-                'time': '{EVENT.TIME}',
-            },
-            'trigger': {
-                'id': '{TRIGGER.ID}',
-                'name': '{TRIGGER.NAME}',
-                'status': '{TRIGGER.STATUS}',
-            },
-            'items': [{
-                'name': '{ITEM.NAME%s}' % index,
-                'host': '{HOST.NAME%s}' % index,
-                'key': '{ITEM.KEY%s}' % index,
-                'value': '{ITEM.VALUE%s}' % index
-            } for index in range(1, 9)],
-        }),
         'operations': [{
             "operationtype": 0,
             "esc_period": 0,
