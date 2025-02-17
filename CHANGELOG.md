@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.2.4
+### Updated
+- Updated files to work with latest CI updates
+
 ## 1.2.3
 ### Updated
 - Updated py-zabbix module because the Zabbix API recently changed their login parameters

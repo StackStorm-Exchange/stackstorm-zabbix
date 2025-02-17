@@ -1,4 +1,3 @@
 git+https://github.com/EncoreTechnologies/py-zabbix.git
-st2client
 pytz
 tzlocal
