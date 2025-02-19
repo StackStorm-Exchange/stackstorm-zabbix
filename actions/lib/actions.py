@@ -60,7 +60,7 @@ class ZabbixBaseAction(Action):
             zabbix_host = self.client.host.get(filter={"host": host_name})
         except ZabbixAPIException as e:
             raise ZabbixAPIException(("There was a problem searching for the host: "
-                                    "{0}".format(e)))
+                                      "{0}".format(e)))
 
         if len(zabbix_host) == 0:
             raise ValueError("Could not find any hosts named {0}".format(host_name))
@@ -77,7 +77,7 @@ class ZabbixBaseAction(Action):
             return result
         except ZabbixAPIException as e:
             raise ZabbixAPIException(("There was a problem searching for the maintenance window: "
-                                    "{0}".format(e)))
+                                      "{0}".format(e)))
 
     def maintenance_create_or_update(self, maintenance_params):
         maintenance_result = self.maintenance_get(maintenance_params['name'])
@@ -87,16 +87,16 @@ class ZabbixBaseAction(Action):
                 return create_result
             except ZabbixAPIException as e:
                 raise ZabbixAPIException(("There was a problem creating the "
-                                        "maintenance window: {0}".format(e)))
+                                          "maintenance window: {0}".format(e)))
         elif len(maintenance_result) == 1:
             try:
                 maintenance_id = maintenance_result[0]['maintenanceid']
                 update_result = self.client.maintenance.update(maintenanceid=maintenance_id,
-                                                            **maintenance_params)
+                                                               **maintenance_params)
                 return update_result
             except ZabbixAPIException as e:
                 raise ZabbixAPIException(("There was a problem updating the "
-                                        "maintenance window: {0}".format(e)))
+                                          "maintenance window: {0}".format(e)))
         elif len(maintenance_result) >= 2:
             raise ValueError(("There are multiple maintenance windows with the "
-                            "name: {0}").format(maintenance_params['name']))
+                              "name: {0}").format(maintenance_params['name']))

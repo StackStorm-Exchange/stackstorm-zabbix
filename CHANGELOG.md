@@ -1,5 +1,32 @@
 # Change Log
 
+## 1.2.4
+### Updated
+- Updated files to work with latest CI updates
+
+## 1.2.3
+### Updated
+- Updated py-zabbix module because the Zabbix API recently changed their login parameters
+
+## 1.2.2
+### Added
+- `actions/host_get_hostgroups` - Gets/Checks the hostgroups that a given Zabbix host is in
+
+## 1.2.1
+### Added
+- `actions/workflows/host_get_active_triggers` - Added parameter, 'priority', which allows active triggers to be filtered by severity (priority) level
+
+## 1.2.0
+### Added
+- `actions/workflows/host_get_active_triggers` - Gets active triggers for a given Zabbix host
+
+## 1.1.0
+
+### Added
+- `actions/host_get_alerts` - Gets alerts for a given Zabbix host
+- `actions/host_get_events` - Gets events for a given Zabbix host
+- `actions/host_get_triggers` - Gets triggers for a given Zabbix host
+
 ## 1.0.0
 
 - Drop python 2.7 support.
