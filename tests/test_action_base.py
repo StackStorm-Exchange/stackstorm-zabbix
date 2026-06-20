@@ -46,7 +46,12 @@ class BaseActionTestCase(ZabbixBaseActionTestCase):
         action = self.get_action_instance(self.token_config)
         action.connect()
 
-        mock_zabbix_cls.assert_called_with(url="http://localhost:8080")
+        mock_zabbix_cls.assert_called_with(
+            url="http://localhost:8080",
+            validate_certs=True,
+            timeout=30,
+            skip_version_check=False,
+        )
         mock_client.login.assert_called_once_with(token="my-test-token-12345")
 
     @mock.patch("lib.actions.ZabbixAPI")

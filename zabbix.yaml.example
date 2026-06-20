@@ -2,4 +2,8 @@
 url: http://localhost:8080
 username: Admin
 password: zabbix
+validate_certs: true
+timeout: 30
+skip_version_check: false
 # api_token: "your-api-token-here"  # preferred over username/password
+# validate_certs: false  # Use when stackstorm runners don't have CA for zabbix HTTPS cert

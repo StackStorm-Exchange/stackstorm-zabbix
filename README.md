@@ -34,6 +34,9 @@ st2 pack config zabbix
 | `api_token` | Zabbix API token (preferred) | — | No* |
 | `username` | Zabbix username | `Admin` | No* |
 | `password` | Zabbix password | `zabbix` | No* |
+| `validate_certs` | Specifying certificate validation | `true` | No* |
+| `timeout` | Connection timeout to Zabbix API | `30` | No* |
+| `skip_version_check` |  Skip version compatibility check | `false` | No* |
 
 \* Either `api_token` OR `username`/`password` must be provided.
 

@@ -1,5 +1,10 @@
 # Change Log
 
+## [2.0.1] - 2026-06-19
+
+### Added
+- Config params ["validate_certs", "timeout", "skip_version_check"] matching with ZabbixAPI class of zabbix_utils
+
 ## [2.0.0] - 2026-06-05
 
 **BREAKING CHANGE**: This version is not backwards compatible with previous releases. All actions have been renamed, parameters standardized, and return types changed. Existing workflows, rules, and automations that reference this pack must be refactored before upgrading.

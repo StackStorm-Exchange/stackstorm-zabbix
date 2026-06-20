@@ -1,3 +1,6 @@
 ---
 url: http://localhost:8080
 api_token: my-test-token-12345
+validate_certs: true
+timeout: 30
+skip_version_check: false

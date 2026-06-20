@@ -17,3 +17,15 @@ api_token:
   type: string
   description: Zabbix API token (preferred over username/password)
   secret: true
+validate_certs:
+  type: boolean
+  description: Validate HTTPS certificate (honor warnings)
+  default: true
+timeout:
+  type: integer
+  description: Connection timeout to Zabbix API
+  default: 30
+skip_version_check:
+  type: boolean
+  description: Skip version compatibility check (Use at own risk)
+  default: false
